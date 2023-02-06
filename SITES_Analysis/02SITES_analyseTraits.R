@@ -80,7 +80,7 @@ zoo.effect.plot <- left_join(zoo.stab.auc.prefin, zoo.dummy.con, by = c("Taxa"))
 names(zoo.effect.plot)
 
 #### zoo traits ####
-zoo.feeding <- read_excel("~/Desktop/Stability-master/SITES_SpeciesStab/Data/collectedZooplanktonFeedingMode.xlsx")
+zoo.feeding <- read_excel("SITES_Data/collectedZooplanktonFeedingMode.xlsx")
 names(zoo.feeding)
 
 zoo.feeding$Treatment[zoo.feeding$Treatment == "F" ]<- "Pulse"
@@ -91,7 +91,7 @@ unique(zoo.feeding$consumption_mode)
 levels(as.factor(zoo.effect.plot$mean.trend))
 
 #### size data ####
-zoo.size <- read_csv("output/zooplanktonMeanLength.csv") %>% 
+zoo.size <- read_csv("SITES_Data/zooplanktonMeanLength.csv") %>% 
   select(-...1  )
 names(zoo.size)
 zoo.size$Treatment[zoo.size$Treatment == "F" ]<- "Pulse"
@@ -120,7 +120,7 @@ corr_size_AUCrr <- zoo.with.traits %>%
   stat_cor( label.x = 1.8)           # Add correlation coefficient
 
 plot_grid(corr_size_AUCpi, corr_size_AUCrr, labels = c('(a)', '(b)'))
-ggsave(plot = last_plot(), file = 'correlation_size_stability.png', width = 8, height = 4)
+ggsave(plot = last_plot(), file = 'Supplement_correlation_size_stability.png', width = 8, height = 4)
 
 #### Dominance plot size ####
 
@@ -171,9 +171,6 @@ AUC.pi_dom <- ggplot(subset(zoo.with.traits, AUC.stability == 'AUC.pi'), aes(x =
         strip.text.x  = element_text(size = 16, face = 'bold'))
 AUC.pi_dom 
 
-ggarrange(AUC.pi_dom,AUC.RR_dom, ncol = 2 )
-#ggsave(plot = last_plot(), file = 'SIL_aucDOM.png', width = 11, height = 5)
-
 ### Fig. 5 c,d ###
 AUC.pi.size <- ggplot(subset(zoo.with.traits, AUC.stability == 'AUC.pi'), aes(x = mean.size, y=AUC.value, color = trend))+
   geom_point(alpha = .2)+
@@ -218,7 +215,7 @@ AUC.rr.size
 
 ### all Fig. 5 ###
 plot_grid(AUC.RR_dom, AUC.pi_dom, AUC.rr.size, AUC.pi.size,ncol = 2,hjust = -1.1,labels = c('(a)','(b)', '(c)', '(d)'),rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 12, height = 8, file = 'AUCranking.png')
+ggsave(plot = last_plot(), width = 12, height = 8, file = 'Fig5.png')
 
 
 ### Supplement Fig. 5 ###
@@ -280,6 +277,6 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 AUC.pi.ft
 plot_grid(AUC.rr.ft, AUC.pi.ft, ncol = 2,hjust = -1.1,labels = c('(a)','(b)', '(c)', '(d)'),rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 9, height = 4, file = 'AUCfeedingMode.png')
+ggsave(plot = last_plot(), width = 9, height = 4, file = 'Supplement_AUCfeedingMode.png')
 
 

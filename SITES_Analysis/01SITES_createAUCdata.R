@@ -2,9 +2,6 @@
 rm(list=ls())
 graphics.off()
 
-setwd("~/Desktop/Stability-master/SITES_SpeciesStab")
-
-
 # the following libraries are needed
 # please add all of them if they are not installed yet
 library(cowplot)
@@ -15,7 +12,7 @@ library(here)
 
 #### load data ####
 
-zoo <- read.csv2("Data/zooplankton.csv", sep=";") 
+zoo <- read.csv2("SITES_Data/zooplankton.csv", sep=";") 
 str(zoo)
 names(zoo)
 
@@ -30,7 +27,7 @@ zoo.size <- zoo %>%
     sd.size = sd(size, na.rm = T)) %>%
   arrange(Treatment, desc(mean.size)) %>%
   filter(!Taxa %in% c('small Cladoceran', 'Nauplii'))
-#write.csv(zoo.size, file = here('output/zooplanktonMeanLength.csv'))
+write.csv(zoo.size, file = here('SITES_Data/zooplanktonMeanLength.csv'))
 
 #### Biomass based Analysis ####
 zoo <- zoo %>%
@@ -287,43 +284,5 @@ ggplot(.,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
   theme(strip.background =element_rect(),
         strip.text.x  = element_text(size = 12, face = 'bold'))+
   guides(color = guide_legend(override.aes = list(size = 3.5)))
-ggsave(plot = last_plot(), file = here('output/aucwErrorbars_SE.png'),width = 12, height = 8)
+ggsave(plot = last_plot(), file = here('output/Fig4.png'),width = 12, height = 8)
 
-#### Total AUC plot ####
-names(zoo.stab.auc.prefin1)
-
-total.auc <- zoo.stab.auc.prefin1 %>%
-  distinct(AUC.totRR, Lake, Treatment)
-
-#AUC.totRR
-ggplot(total.auc,aes(y = AUC.totRR, x = Lake))+
-  geom_point(color = 'darkgrey', alpha = .85)+
-  geom_boxplot(alpha = .7)+
-  geom_hline(yintercept = 0)+
-  facet_grid(~Treatment)+
-  theme_bw()+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) + 
-  theme(axis.title.x = element_text(size = 16,face = "plain", colour = "black", vjust = 0),
-        axis.text.x = element_text(size = 10,  colour = "black", angle = 0, vjust = 0.5)) +
-  theme(axis.title.y = element_text(size = 16, face = "plain", colour = "black", vjust = 1.8),
-        axis.text.y = element_text(size = 10,  colour = "black", angle = 0, hjust = 0.4)) +
-  theme(strip.background =element_rect(),
-        strip.text.x  = element_text(size = 12))+
-  guides(color = guide_legend(override.aes = list(size = 3.5)))
-#ggsave(plot = last_plot(), file = 'AUCtotRR.png', width = 10, height = 5)
-
-#Treatment AUC.totRR
-ggplot(total.auc,aes(y = AUC.totRR, x = Treatment))+
-  geom_point(color = 'darkgrey', alpha = .85)+
-  geom_boxplot(alpha = .7)+
-  geom_hline(yintercept = 0)+
-  theme_bw()+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) + 
-  theme(axis.title.x = element_text(size = 16,face = "plain", colour = "black", vjust = 0),
-        axis.text.x = element_text(size = 10,  colour = "black", angle = 0, vjust = 0.5)) +
-  theme(axis.title.y = element_text(size = 16, face = "plain", colour = "black", vjust = 1.8),
-        axis.text.y = element_text(size = 10,  colour = "black", angle = 0, hjust = 0.4)) +
-  theme(strip.background =element_rect(),
-        strip.text.x  = element_text(size = 12))+
-  guides(color = guide_legend(override.aes = list(size = 3.5)))
-#ggsave(plot = last_plot(), file = 'AUCtotRR_Treatment.png', width = 4, height = 3)
