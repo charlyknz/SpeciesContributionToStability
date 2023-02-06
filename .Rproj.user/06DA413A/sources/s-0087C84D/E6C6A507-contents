@@ -57,8 +57,6 @@ Dom1R<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.RR,
     labs(y = 'Absolute contribution to stability', x = "")+
     facet_wrap(~Model, ncol = 3)+
     scale_y_continuous(limits = c(-1.7, 1.1), breaks = c(-1.5,-1,-0.5,0,0.5,1))+
-    scale_x_reverse()+
-   # scale_x_continuous(limits = c(0.4,0), breaks = c(0.4,0.2,0))+
     theme_bw() +
     theme(strip.background =element_rect(),
           strip.text = element_text(size = 12, face = 'bold'))+
@@ -73,7 +71,6 @@ Dom1pi<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.pi,
     geom_point(alpha= .3, size = 2)+
     scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
     scale_y_continuous(limits = c(-0.1, 0.1), breaks = c(-0.1,-0.05,0,0.05,0.1))+
-  scale_x_reverse()+
   labs(y = 'Relative contribution to stability', x = " ")+
     facet_wrap(~Model, ncol = 3)+
     theme_bw() +
@@ -84,15 +81,13 @@ Dom1pi<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.pi,
     theme(legend.position="none")
 Dom1pi
   
-unique(stab.alpha$species)
 Dom2R<-ggplot(subset(stab.auc, Limit == 'Limit2'), aes(x=mean.con.pi, y=AUC.RR,
                                                            col=species)) +
     scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
     scale_y_continuous(limits = c(-33, 33), breaks = c(-30,-15,0,15,30))+
-  scale_x_reverse()+
-  geom_point(alpha= .3, size = 2)+
     geom_hline(yintercept=0, col="grey")+
-    labs(y = 'Absolute contribution to stability', x = " ")+
+  geom_point(alpha= .3, size = 2)+
+  labs(y = 'Absolute contribution to stability', x = " ")+
     facet_wrap(~Model, ncol = 3)+
     theme_bw() +
     theme(strip.text.x = element_text(color = 'white'),
@@ -107,10 +102,9 @@ Dom2pi<-ggplot(subset(stab.auc, Limit == 'Limit2'), aes(x=mean.con.pi, y=AUC.pi,
                                                             col=species)) +
     scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
     scale_y_continuous(limits = c(-4, 4), breaks = c(-4,-2,0,2,4))+
-  scale_x_reverse()+
-  geom_point(alpha= .3, size = 2)+
     geom_hline(yintercept=0, col="grey")+
-    labs(y = 'Relative contribution to stability', x = "")+
+  geom_point(alpha= .3, size = 2)+
+  labs(y = 'Relative contribution to stability', x = "")+
     facet_wrap(~Model, ncol = 3)+
     theme_bw() +
     theme(strip.text.x = element_text(color = 'white'),
@@ -122,10 +116,9 @@ Dom2pi
   
 Dom3R<-ggplot(subset(stab.auc, Limit == 'Limit3'), aes(x=mean.con.pi, y=AUC.RR,
                                                            col=species)) +
-    geom_point(alpha= .3, size = 2)+
     geom_hline(yintercept=0, col="grey")+
-    scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
-  scale_x_reverse()+
+  geom_point(alpha= .3, size = 2)+
+  scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
   scale_y_continuous(limits = c(-30, 25), breaks = c(-30,-20,-10,0,10,20))+
     labs(y='Absolute contribution to stability', x = "relative dominance")+
     facet_wrap(~Model, ncol = 3)+
@@ -139,10 +132,9 @@ Dom3R
 
 Dom3pi<-ggplot(subset(stab.auc, Limit == 'Limit3'), aes(x=mean.con.pi, y=AUC.pi,
                                                             col=species)) +
-    geom_point(alpha= .3, size = 2)+
-    geom_hline(yintercept=0, col="grey")+
+  geom_hline(yintercept=0, col="grey")+
+  geom_point(alpha= .3, size = 2)+
     scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
-  scale_x_reverse()+
   scale_y_continuous(limits = c(-3, 2.5), breaks = c(-3,-2,-1,0,1,2))+
     labs(y= 'Relative contribution to stability', x = "relative dominance")+
     facet_wrap(~Model, ncol = 3)+

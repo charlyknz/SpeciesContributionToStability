@@ -3,7 +3,7 @@
     "path": "~/Desktop/phD/SpeciesContributionToStability/BEFD_Analysis/08BEFDdominance.R",
     "project_path": "BEFD_Analysis/08BEFDdominance.R",
     "type": "r_source",
-    "hash": "837829544",
+    "hash": "435508680",
     "contents": "",
     "dirty": false,
     "created": 1675681180600.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "149,38",
-        "scrollLine": "145"
+        "cursorPosition": "151,0",
+        "scrollLine": "138"
     },
     "folds": "",
-    "lastKnownWriteTime": 1675681435,
+    "lastKnownWriteTime": 1675682549,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1675681435674,
+    "last_content_update": 1675682549798,
     "read_only": false,
     "read_only_alternatives": []
 }
