@@ -1,0 +1,237 @@
+#### R script for RAD plots ####
+# by Charlotte Kunze 
+
+#load packages and functions
+library(tidyverse)
+library(ggpubr)
+library(cowplot)
+library(ggpmisc) #for regression lines
+
+setwd("~/Desktop/BEFD22/BEFDisturbance/Untitled/modelOutput")
+
+#### stabAlphaAUC dataset ####
+max<- read.csv('StabAlphaAUC.csv')
+
+# data wrangling - remove duplicates created in the AUC loop
+stab.auc <- distinct(max, Limit, Model, sensitivity, competition, relAlpha, max, runNumber, species, mean.treat.pi, mean.con.pi, AUC.pi, AUC.RR, AUC.totRR) %>%
+  group_by(Limit, runNumber, Model) %>%
+  mutate(MaxAlpha = max(competition)) %>%
+  ungroup() %>%
+  mutate(inv_relAlpha = MaxAlpha/competition) 
+
+#compare measures
+hist(stab.auc$mean.con.pi )
+hist(stab.auc$inv_relAlpha)
+
+
+ggscatter(stab.auc,  y = 'mean.con.pi',x = 'inv_relAlpha', add = 'reg.line', conf.int = T, ylab = 'relat. competitiveness', xlab = 'relat. dominance')  +
+  stat_cor( label.x = 1)           # Add correlation coefficient
+ggsave(plot = last_plot(), file = 'correlationDominanceAlpha.png', width = 5, height = 4 )
+
+ggplot(stab.auc, aes(x = species, y = mean.treat.pi, color = species))+
+  geom_boxplot()+
+  facet_grid(~Limit)+
+  scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+  theme(legend.position = 'none')
+  #ggsave(plot = last_plot(), file = 'MeanTreatPi_boxplot_Limits.png')
+
+  stab.auc.RAD <- max %>% 
+  group_by(species) %>%
+  summarise(overall.con.pi = mean(mean.con.pi,na.rm = T)) %>% #calculate mean dom in control
+  mutate(ranking.by.mean.pi =  rank(dplyr::desc(overall.con.pi)) )%>%
+  left_join(., stab.auc, by = c('species'))      %>% # add ranking
+  distinct(species,Limit,Model, runNumber, AUC.pi, AUC.RR,ranking.by.mean.pi, overall.con.pi) %>% #remove duplicates (because of timepoint)
+  gather(key = 'AUCmetric', value = 'AUC', -Limit, -Model, -species, -runNumber,-ranking.by.mean.pi, -overall.con.pi) %>%
+  group_by(species, Limit, Model, AUCmetric) %>%
+  mutate(mean.AUC = mean(AUC, na.rm = T), #mean for each species 
+            sd.AUC = mean(AUC, na.rm = T),
+            se.AUC = sd.AUC/sqrt(n())) %>%
+  mutate(trend = ifelse(AUC < 0.1, 'negative', ifelse(AUC >0.1, 'positive', 'neutral')), 
+         mean.trend = ifelse(mean.AUC < 0.1, 'negative', ifelse(mean.AUC >0.1, 'positive', 'neutral')))
+
+  #### Figure 3 dominance ~AUC  ####
+  names(max)
+  
+Dom1R<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.RR,
+                                                           col=species)) +
+    geom_hline(yintercept=0, col="grey")+
+    geom_point(alpha= .3, size = 2)+
+    scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+    labs(y = 'Absolute contribution to stability', x = "")+
+    facet_wrap(~Model, ncol = 3)+
+    scale_y_continuous(limits = c(-1.7, 1.1), breaks = c(-1.5,-1,-0.5,0,0.5,1))+
+    scale_x_reverse()+
+   # scale_x_continuous(limits = c(0.4,0), breaks = c(0.4,0.2,0))+
+    theme_bw() +
+    theme(strip.background =element_rect(),
+          strip.text = element_text(size = 12, face = 'bold'))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 16)) +
+    theme(legend.position="none")
+Dom1R
+  
+Dom1pi<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.pi,
+                                                            col=species)) +
+    geom_hline(yintercept=0, col="grey")+
+    geom_point(alpha= .3, size = 2)+
+    scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+    scale_y_continuous(limits = c(-0.1, 0.1), breaks = c(-0.1,-0.05,0,0.05,0.1))+
+  scale_x_reverse()+
+  labs(y = 'Relative contribution to stability', x = " ")+
+    facet_wrap(~Model, ncol = 3)+
+    theme_bw() +
+    theme(strip.background =element_rect(),
+          strip.text = element_text(size = 12, face = 'bold'))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 16)) +
+    theme(legend.position="none")
+Dom1pi
+  
+  unique(stab.alpha$species)
+Dom2R<-ggplot(subset(stab.auc, Limit == 'Limit2'), aes(x=mean.con.pi, y=AUC.RR,
+                                                           col=species)) +
+    scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+    scale_y_continuous(limits = c(-33, 33), breaks = c(-30,-15,0,15,30))+
+  scale_x_reverse()+
+  geom_point(alpha= .3, size = 2)+
+    geom_hline(yintercept=0, col="grey")+
+    labs(y = 'Absolute contribution to stability', x = " ")+
+    facet_wrap(~Model, ncol = 3)+
+    theme_bw() +
+    theme(strip.text.x = element_text(color = 'white'),
+          strip.background =element_rect(fill = 'white', linetype = 0))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 16)) +
+    theme(legend.position="none")
+
+Dom2R
+  
+Dom2pi<-ggplot(subset(stab.auc, Limit == 'Limit2'), aes(x=mean.con.pi, y=AUC.pi,
+                                                            col=species)) +
+    scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+    scale_y_continuous(limits = c(-4, 4), breaks = c(-4,-2,0,2,4))+
+  scale_x_reverse()+
+  geom_point(alpha= .3, size = 2)+
+    geom_hline(yintercept=0, col="grey")+
+    labs(y = 'Relative contribution to stability', x = "")+
+    facet_wrap(~Model, ncol = 3)+
+    theme_bw() +
+    theme(strip.text.x = element_text(color = 'white'),
+          strip.background =element_rect(fill = 'white', linetype = 0))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 16)) +
+    theme(legend.position="none")
+Dom2pi
+  
+Dom3R<-ggplot(subset(stab.auc, Limit == 'Limit3'), aes(x=mean.con.pi, y=AUC.RR,
+                                                           col=species)) +
+    geom_point(alpha= .3, size = 2)+
+    geom_hline(yintercept=0, col="grey")+
+    scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+  scale_x_reverse()+
+  scale_y_continuous(limits = c(-30, 25), breaks = c(-30,-20,-10,0,10,20))+
+    labs(y='Absolute contribution to stability', x = "relative dominance")+
+    facet_wrap(~Model, ncol = 3)+
+    theme_bw() +
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(strip.text.x = element_text(color = 'white'),
+          strip.background =element_rect(fill = 'white', linetype = 0))+
+    theme(text = element_text(size = 16)) +  theme(legend.position="none")
+  
+Dom3R
+
+Dom3pi<-ggplot(subset(stab.auc, Limit == 'Limit3'), aes(x=mean.con.pi, y=AUC.pi,
+                                                            col=species)) +
+    geom_point(alpha= .3, size = 2)+
+    geom_hline(yintercept=0, col="grey")+
+    scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+  scale_x_reverse()+
+  scale_y_continuous(limits = c(-3, 2.5), breaks = c(-3,-2,-1,0,1,2))+
+    labs(y= 'Relative contribution to stability', x = "relative dominance")+
+    facet_wrap(~Model, ncol = 3)+
+    theme_bw() +
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(strip.text.x = element_text(color = 'white'),
+          strip.background =element_rect(fill = 'white', linetype = 0))+
+    theme(text = element_text(size = 16)) +  theme(legend.position="")
+  
+Dom3pi#ggsave(plot = RRpi, 'RRPi.png',width = 8, height = 4)
+
+par(mar=c (5.1, 4.1, 4.1, 2.1))
+ggarrange(Dom1R,Dom1pi, Dom2R,Dom2pi,Dom3R,Dom3pi,hjust = -1, ncol = 2, nrow = 3)
+ggsave(plot = last_plot(), width = 12, height = 12, file = 'Dominance_allDist.png')
+
+  
+AUC.pi.dom <- max %>%
+    distinct(mean.con.pi,AUC.pi,Limit,Model,species) %>%
+    ggplot(., aes(x=mean.con.pi, y=AUC.pi, color = species)) +
+    geom_hline(yintercept=0, col="grey")+
+    geom_point(alpha= .2)+
+    scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+    labs(y = 'AUC.pi +- se', x = 'dominance')+
+    facet_grid(~Limit~Model, scales = 'free_y')+
+    theme_bw() +
+    theme(strip.background =element_rect(),
+          strip.text = element_text(size = 12, face = 'bold'))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 12)) +
+    theme(legend.position="none")
+AUC.pi.dom
+  
+  
+  AUC.RR.dom <- max %>%
+    distinct(mean.con.pi,AUC.RR,Limit,Model,species) %>%
+    ggplot(., aes(x=mean.con.pi, y=AUC.RR, color = species)) +
+    geom_hline(yintercept=0, col="grey")+
+    geom_point(alpha= .2)+
+    scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+    labs(y = 'AUC.RR +- se', x = 'dominance')+
+    facet_grid(~Limit~Model, scales = 'free_y')+
+    theme_bw() +
+    theme(strip.background =element_rect(),
+          strip.text = element_text(size = 12, face = 'bold'))+
+    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+    theme(text = element_text(size = 12)) +
+    theme(legend.position="none")
+  AUC.RR.dom
+  
+  plot_grid(AUC.pi.dom, AUC.RR.dom, ncol = 2)
+  #ggsave(plot = last_plot(), file = 'AUCs_dominance.png', width = 12, height = 5)
+  
+#### dominance and alpha ####
+AUC.pi.alpha <- max %>%
+  distinct(inv_relAlpha,relAlpha,AUC.pi,Limit,Model,species) %>%
+  ggplot(., aes(x=inv_relAlpha, y=AUC.pi, color = species)) +
+  geom_hline(yintercept=0, col="grey")+
+  geom_point(alpha= .2)+
+  scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+  labs(y = 'AUC.pi +- se', x = '1/relAlpha - relative competitiveness')+
+  facet_grid(~Limit~Model, scales = 'free_y')+
+  theme_bw() +
+  theme(strip.background =element_rect(),
+        strip.text = element_text(size = 12, face = 'bold'))+
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+  theme(text = element_text(size = 12)) +
+  theme(legend.position="none")
+AUC.pi.alpha
+
+
+AUC.RR.alpha <- max %>%
+  distinct(inv_relAlpha,relAlpha,AUC.RR,Limit,Model,species) %>%
+  ggplot(., aes(x=inv_relAlpha, y=AUC.RR, color = species)) +
+  geom_hline(yintercept=0, col="grey")+
+  geom_point(alpha= .2)+
+  scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
+  labs(y = 'AUC.RR +- se', x = '1/relAlpha - relative competitiveness')+
+  facet_grid(~Limit~Model, scales = 'free_y')+
+  theme_bw() +
+  theme(strip.background =element_rect(),
+        strip.text = element_text(size = 12, face = 'bold'))+
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
+  theme(text = element_text(size = 12)) +
+  theme(legend.position="none")
+AUC.RR.alpha
+
+plot_grid(AUC.pi.alpha, AUC.RR.alpha, ncol = 2)
+ggsave(plot = last_plot(), file = '1_alpha_AUCs.png', width = 12, height = 5)
+
