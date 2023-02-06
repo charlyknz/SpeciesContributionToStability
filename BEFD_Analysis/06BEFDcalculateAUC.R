@@ -10,127 +10,11 @@ library(ggpubr)
 library(psych)
 library(cowplot)
 
-setwd("~/Desktop/BEFD22/BEFDisturbance/Untitled/modelOutput")
 
 #### import data ####
-data3<- read.csv2('LRRData2.csv')
+data3<- read.csv2('BEFD_createdData/LRRData2.csv')
 str(data3)
 
-
-#### LRR plot ####
-
-RR.plot3<-ggplot(subset(data3, Limit == 'Limit3' & runNumber == 3), aes(x=timepoint, y=RR,
-                                 col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#D56060', '#C6C6C680', '#C6C6C680', '#C6C6C680', '#C6C6C680'))+
-  geom_line()+
-  xlab("time") +  ylab ("biomass")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-RR.plot3
-
-RR.plot2<-ggplot(subset(data3, Limit == 'Limit2' & runNumber == 3), aes(x=timepoint, y=RR,
-                                                                              col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#68789E', '#C6C6C680', '#C6C6C680', '#C6C6C680', '#C6C6C680'))+
-  geom_line()+
-  xlab("time") +  ylab ("biomass")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-RR.plot2
-
-RR.plot1<-ggplot(subset(data3, Limit == 'Limit1' & runNumber == 3), aes(x=timepoint, y=RR,
-                                                                              col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
-  geom_line()+
-  xlab("time") +  ylab ("biomass")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-RR.plot1
-#ggsave(plot =delta.pi.plot3, file = 'deltapi_Limit3.png', width=8, height = 5)
-
-plot_grid(RR.plot1, RR.plot2, RR.plot3, ncol = 1)
-ggsave(plot = last_plot(),file = 'biomassRR_time.png', width = 9, height = 11)
-
-
-delta.pi.plot3<-ggplot(subset(data3, Limit == 'Limit3' & runNumber == 3), aes(x=timepoint, y=delta.pi,
-                                                                              col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#D56060', '#C6C6C680', '#C6C6C680', '#C6C6C680', '#C6C6C680'))+
-  geom_line()+
-  xlab("time") +  ylab ("proportion")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-delta.pi.plot3
-
-delta.pi.plot2<-ggplot(subset(data3, Limit == 'Limit2' & runNumber == 3), aes(x=timepoint, y=delta.pi,
-                                                                              col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#68789E', '#C6C6C680', '#C6C6C680', '#C6C6C680', '#C6C6C680'))+
-  geom_line()+
-  xlab("time") +  ylab ("proportion")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-delta.pi.plot2
-
-delta.pi.plot1<-ggplot(subset(data3, Limit == 'Limit1' & runNumber == 3), aes(x=timepoint, y=delta.pi,
-                                                                              col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  geom_vline(xintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
-  geom_line()+
-  xlab("time") +  ylab ("proportion")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(legend.position = 'none')+
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-delta.pi.plot1
-#ggsave(plot =delta.pi.plot3, file = 'deltapi_Limit3.png', width=8, height = 5)
-
-plot_grid(delta.pi.plot1, delta.pi.plot2, delta.pi.plot3, ncol = 1)
-ggsave(plot = last_plot(),file = 'proportion_time.png', width = 7, height = 11)
-
-LRR.plot<-ggplot(subset(data3, Limit == 'Limit1' & runNumber == 3), aes(x=timepoint, y=RR,
-                                                                        col=species)) +
-  geom_hline(yintercept=0, col="grey")+
-  theme(legend.position="bottom")+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
-  geom_line()+
-  xlab("time") +  ylab ("RR")+
-  facet_grid(~Model)+
-  theme_bw() +
-  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
-  theme(text = element_text(size = 16)) 
-LRR.plot
-ggsave(plot =LRR.plot, file = 'RR_Limit1.png', width=8, height = 5)
 
 #### Fig. 1####
 str(data3)
@@ -168,8 +52,9 @@ Lim3LRR<-ggplot(subset(data3, Limit == 'Limit3'&runNumber == 27), aes(x=timepoin
   theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
   theme(text = element_text(size = 12)) +  theme(legend.position="none")
 Lim3LRR
-plot_grid(Lim1LRR, Lim2LRR, Lim3LRR,ncol = 1, nrow = 3, vjust = 1.7,hjust=0.05,label_size = 10,labels = c('Limit1', 'Limit2', 'Limit3'), rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 8, height = 7, file = 'Biomass.png')
+
+plot_grid(Lim1LRR, Lim2LRR, Lim3LRR,ncol = 1, nrow = 3, vjust = 1.7,hjust=0.05,label_size = 10,labels = c('a)', 'b)', 'c)'), rel_widths = c(1,1))
+ggsave(plot = last_plot(), width = 8, height = 7, file = here('output/Fig.1_Biomass.png'))
 
 
 ### create USI ####
