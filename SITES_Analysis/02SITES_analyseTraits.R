@@ -120,7 +120,7 @@ corr_size_AUCrr <- zoo.with.traits %>%
   stat_cor( label.x = 1.8)           # Add correlation coefficient
 
 plot_grid(corr_size_AUCpi, corr_size_AUCrr, labels = c('(a)', '(b)'))
-ggsave(plot = last_plot(), file = 'Supplement_correlation_size_stability.png', width = 8, height = 4)
+ggsave(plot = last_plot(), file = here('output/Supplement_correlation_size_stability.png'), width = 8, height = 4)
 
 #### Dominance plot size ####
 
@@ -215,7 +215,7 @@ AUC.rr.size
 
 ### all Fig. 5 ###
 plot_grid(AUC.RR_dom, AUC.pi_dom, AUC.rr.size, AUC.pi.size,ncol = 2,hjust = -1.1,labels = c('(a)','(b)', '(c)', '(d)'),rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 12, height = 8, file = 'Fig5.png')
+ggsave(plot = last_plot(), width = 12, height = 8, file = here('output/Fig5.png'))
 
 
 ### Supplement Fig. 5 ###
@@ -277,6 +277,6 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 AUC.pi.ft
 plot_grid(AUC.rr.ft, AUC.pi.ft, ncol = 2,hjust = -1.1,labels = c('(a)','(b)', '(c)', '(d)'),rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 9, height = 4, file = 'Supplement_AUCfeedingMode.png')
+ggsave(plot = last_plot(), width = 9, height = 4, file = here('output/Supplement_AUCfeedingMode.png'))
 
 
