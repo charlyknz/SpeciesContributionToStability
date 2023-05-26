@@ -5,6 +5,7 @@
 library(tidyverse)
 library(readxl)
 library(cowplot)
+library(here)
 
 #### data ####
 data <- zoo.stab.auc.prefin 
@@ -35,7 +36,7 @@ AUC.RR_mean.pi <- ggplot(Raw.dom.zoo, aes(x = relat.dom, y= mean.AUC.RR, color =
   geom_point(alpha = .6, size = 2.5)+
   scale_color_manual(values = c('#D56060', 'grey','#68789E'))+
  # scale_x_reverse()+
-  scale_y_continuous(limits = c(-30,30), breaks = seq(-30,30,10))+
+  scale_y_continuous(limits = c(-22,22), breaks = seq(-20,20,10))+
   labs(x = "Relative dominance", y = 'Absolute contribution to stability') +
   theme_bw() +
   facet_grid(~Treatment)+
@@ -55,7 +56,7 @@ AUC.pi_mean.pi <- ggplot(Raw.dom.zoo, aes(x = relat.dom, y= mean.AUC.pi, color =
   geom_hline(yintercept = 0, col="grey") +
   geom_point(alpha = .6, size = 2.5)+
   scale_color_manual(values = c('#D56060', 'grey','#68789E'))+
-  scale_y_continuous(limits = c(-13,23), breaks = c(-10,0,10,20))+
+  scale_y_continuous(limits = c(-12,21), breaks = c(-10,0,10,20))+
   # scale_x_reverse()+
   labs(x = "Relative dominance", y = 'Relative contribution to stability') +
   theme_bw() +
@@ -73,7 +74,125 @@ AUC.pi_mean.pi <- ggplot(Raw.dom.zoo, aes(x = relat.dom, y= mean.AUC.pi, color =
 AUC.pi_mean.pi 
 
 plot_grid( AUC.RR_mean.pi, AUC.pi_mean.pi,ncol = 2,hjust = -1,labels = c('(a)','(b)', '(c)', '(d)'),rel_heights = c(2,3))
-ggsave(plot = last_plot(), width = 14, height = 8, file = here('output/Fig5new.png'))
+ggsave(plot = last_plot(), width = 12, height = 5, file = here('output/Fig5new.png'))
+
+#### correlation structure ####
+str(Raw.dom.zoo)
+Raw.dom.zoo$pos.AUC.RR <- abs(Raw.dom.zoo$mean.AUC.RR)
+Raw.dom.zoo$pos.AUC.pi <- abs(Raw.dom.zoo$mean.AUC.pi)
+
+#press 
+corrPlot_press <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Press'), y = 'mean.AUC.RR', x = 'relat.dom',ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_press
+
+corrPlot_pressPi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Press'), y = 'mean.AUC.pi', x = 'relat.dom',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pressPi
+
+#pulse
+corrPlot_pulse <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse'), y = 'mean.AUC.RR', x = 'relat.dom',ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulse
+
+corrPlot_pulsePi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse'), y = 'mean.AUC.pi', x = 'relat.dom',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsePi
+
+#pulsepress
+corrPlot_pulsepress <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse & Press'), y = 'mean.AUC.RR', x = 'relat.dom',ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsepress
+
+corrPlot_pulsepressPi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse & Press'), y = 'mean.AUC.pi', x = 'relat.dom',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsepressPi
+
+SITES_corr <- plot_grid(corrPlot_press,corrPlot_pressPi,corrPlot_pulse,corrPlot_pulsePi,corrPlot_pulsepress,corrPlot_pulsepressPi, ncol = 2)
+SITES_corr
+
+ggsave(plot = SITES_corr, file = here('output/SITES_correlation.png'), width = 8, height = 12)
+
+#### size ####
+
+zoo.size <- read_csv("SITES_Data/zooplanktonMeanLength.csv") %>% 
+  select(-...1  )
+
+names(zoo.size)
+
+## adjust Treatment labels
+zoo.size$Treatment[zoo.size$Treatment == "F" ]<- "Pulse"
+zoo.size$Treatment[zoo.size$Treatment == "FS"] <- "Pulse & Press"
+zoo.size$Treatment[zoo.size$Treatment == "S"] <- "Press"
+
+### join size with relat.dom data ###
+zoo.with.size <- left_join(Raw.dom.zoo, zoo.size, by = c("Taxa", "Treatment" )) #%>%
+names(zoo.with.size)
+unique(zoo.with.size$Taxa)
+hist(log(zoo.with.size$mean.size))
+
+corrPlot <- ggscatter(zoo.with.size, y = 'mean.size', x = 'relat.dom',ylab = 'Mean size (in um)', xlab = 'Mean relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot
+
+### AUC plot SIZE ###
+
+zoo.with.traits <- zoo.stab.auc.prefin %>%                                              # ranked by mean.pi
+  gather('AUC.pi','AUC.RR', key = "AUC.stability", value = "AUC.value") %>%
+  dplyr::group_by( Taxa, Treatment, AUC.stability) %>% 
+  dplyr::mutate(mean.value = mean(AUC.value),
+                sd.AUC = sd(AUC.value),
+                se.value = sd.AUC/sqrt(n())) %>%
+  mutate(trend = ifelse(AUC.value < 0, 'negative', 'positive')) %>%
+  mutate(mean.trend = ifelse(mean.value < -0.1, 'negative', ifelse(mean.value > 0.1, 'positive', 'neutral'))) %>%
+  left_join(., zoo.size, by = c("Taxa", "Treatment", 'Zooplankton_group' )) #%>%
+names(zoo.with.traits)
+unique(zoo.with.traits$Taxa)
+hist(log(zoo.size$mean.size))
+
+AUC.pi.size <- ggplot(subset(zoo.with.traits, AUC.stability == 'AUC.pi'), aes(x = mean.size, y=AUC.value, color = trend))+
+  geom_point(alpha = .2)+
+  geom_point(aes( x= mean.size, y= mean.value, fill = mean.trend), size = 3, pch = 21, color = 'black') +
+  geom_errorbar(aes(x = mean.size, ymin = mean.value-se.value, ymax = mean.value+se.value,color = mean.trend), width = .1, color = 'black')+
+  # geom_text(aes(x = mean.size,y = mean.value, label = Taxa), nudge_x = 0.05,nudge_y = 15,vjust = 0,color = "grey30" ,size = 2.5, angle = 85) +
+  scale_color_manual(values = c('#D56060', '#68789E'))+
+  scale_fill_manual(values = c('#D56060', 'grey','#68789E'))+
+  scale_x_log10(limits = c(40, 3200),breaks = c(100, 300, 1000, 3000))+
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  labs(x = "Size (in µm on Ln-transformed scale)", y = 'Relative contribution to stability') +
+  theme_bw() +
+  facet_grid(~Treatment)+
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) +
+  theme(legend.title = element_blank(),
+        legend.position = "none",
+        #legend.background = element_rect(linetype = "solid", colour = "grey", size = 1),
+        legend.key.size = unit(1, "cm"))#+
+# theme(strip.text.x = element_text(color = 'white'),
+#      strip.background =element_rect(fill = 'white', linetype = 0))
+AUC.pi.size 
+
+AUC.rr.size <- ggplot(subset(zoo.with.traits, AUC.stability == 'AUC.RR'), aes(x = mean.size, y=AUC.value, color = trend))+
+  geom_point(alpha = .2)+
+  geom_point(aes( x= mean.size, y= mean.value, fill = mean.trend), size = 3, pch = 21, color = 'black') +
+  geom_errorbar(aes(x = mean.size, ymin = mean.value-se.value, ymax = mean.value+se.value,color = mean.trend), width = .1, color = 'black')+
+  # geom_text(aes(x = mean.size,y = mean.value, label = Taxa), nudge_x = 0.1,nudge_y = 15,vjust = 0,color = "grey30" ,size = 2.5, angle = 85) +
+  scale_color_manual(values = c('#D56060', '#68789E'))+
+  scale_fill_manual(values = c('#D56060','grey', '#68789E'))+
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  scale_x_log10()+
+  labs(x = "Size (in µm on Ln-transformed scale)", y = 'Absolute contribution to stability') +
+  theme_bw() +
+  facet_grid(~Treatment)+
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) +
+  theme(legend.title = element_blank(),
+        legend.position = "none",
+        legend.key.size = unit(1, "cm"))#+
+# theme(strip.text.x = element_text(color = 'white'),
+#        strip.background =element_rect(fill = 'white', linetype = 0))
+AUC.rr.size
+
+plot_grid(AUC.rr.size, corrPlot,AUC.pi.size,ncol = 2,hjust = -0.2,labels = c('(a)','(b)', '(c)', '(d)'),rel_widths = c(2.5,1.5))
+ggsave(plot = last_plot(), width = 10, height = 7, file = here('output/Fig5Supplement.png'))
 
 
 ### Dominance Ranking ###
@@ -181,3 +300,5 @@ blank <- ggplot()+
   theme( panel.background = element_rect(fill = 'white', color = 'white'))
 plot_grid(raw.plot, MEAN.plot, raw.plot.col, blank, rel_heights = c(2, 1.7))
 ggsave(plot = last_plot(), file = here('output/RankingRelatDom.png'),width = 10, height = 8)
+
+
