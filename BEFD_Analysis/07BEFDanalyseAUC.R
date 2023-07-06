@@ -4,7 +4,6 @@
 ####load packages ####
 #library(reshape2)
 library(tidyverse)
-library(nlme)
 library(ggpubr)
 library(psych)
 library(cowplot)
@@ -137,7 +136,7 @@ Lim3RRpi
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1RRpi, Lim2RRpi, Lim3RRpi,ncol = 1, nrow = 3, vjust = 3.0,hjust=-1.5,widths = c(1,1), labels = c( '(a)', '(b)', '(c)'))
-ggsave(plot = last_plot(), width = 9, height =10, file = here('output/Fig.2.png'))
+ggsave(plot = last_plot(), width = 9, height =10, file = here('output/Fig.2.pdf'))
 
 hist(stab.alpha$relAlpha)
 

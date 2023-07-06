@@ -293,6 +293,7 @@ ggscatter(stab.auc,  y = 'mean.con.pi',x = 'inv_relAlpha', add = 'reg.line', con
 
 #### Figure 3 dominance ~AUC  ####
 
+labeller_stab <- c(press = 'Press', pulse='Pulse', pulsepress='Pulse & Press')
 # adjust decimal points:
 scaleFUN <- function(x) sprintf("%.2f", x)
 
@@ -317,7 +318,7 @@ Dom1R<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.RR,
     geom_rect(data = rectLim1R, inherit.aes = F,mapping = aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2), fill = NA, colour = '#bababa') +
     scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
     labs(y = 'Absolute contribution to stability', x = "")+
-    facet_wrap(~Model, ncol = 3)+
+    facet_wrap(~Model, ncol = 3, labeller = labeller(Model = labeller_stab))+
     scale_y_continuous(limits = c(-1.7, 1.2), breaks = c(-1.5,-1,-0.5,0,0.5,1),labels=scaleFUN)+
     theme_bw() +
     theme(strip.background =element_rect(),
@@ -347,8 +348,8 @@ Dom1pi<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.pi,
     scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
     scale_y_continuous(limits = c(-0.1, 0.11), breaks = c(-0.1,-0.05,0,0.05,0.1),labels=scaleFUN)+
     labs(y = 'Relative contribution to stability', x = " ")+
-    facet_wrap(~Model, ncol = 3)+
-    theme_bw() +
+  facet_wrap(~Model, ncol = 3, labeller = labeller(Model = labeller_stab))+
+  theme_bw() +
     theme(strip.background =element_rect(),
           strip.text = element_text(size = 12, face = 'bold'))+
     theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
@@ -421,7 +422,7 @@ Dom2pi<-ggplot(subset(stab.auc, Limit == 'Limit2'), aes(x=mean.con.pi, y=AUC.pi,
 Dom2pi
   
 
-# Limit 3 #
+## Limit 3 #
 rectLim3R <- tibble(Model = c('press', 'pulse', 'pulsepress'),
                     x1 =c(0.044,NA, NA) ,
                     x2 = c(0.354,NA, NA) ,
@@ -484,4 +485,4 @@ Dom3pi#ggsave(plot = RRpi, 'RRPi.png',width = 8, height = 4)
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 plot_grid(Dom1R,Dom1pi, Dom2R,Dom2pi,Dom3R,Dom3pi,hjust = -1, ncol = 2, nrow = 3, labels = c( '(a)',' ', '(b)',' ', '(c)'), rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 12, height = 12, file = here('output/Fig.3_Dominance_allDist.png'))
+ggsave(plot = last_plot(), width = 12, height = 12, file = here('output/Fig.3_Dominance.pdf'))
