@@ -12,7 +12,7 @@ library(cowplot)
 
 
 #### import data ####
-data3<- read.csv2('BEFD_createdData/LRRData2.csv')
+data3<- read.csv('BEFD_createdData/LRRData.csv')
 str(data3)
 
 
@@ -34,7 +34,7 @@ Lim2LRR<-ggplot(subset(data3, Limit == 'Limit2' & runNumber == 40), aes(x=timepo
                                                                   col=species)) +
   scale_color_manual(values = c('#68789E', '#C6C6C680', '#C6C6C680', '#C6C6C680', '#C6C6C680'))+
   geom_line()+
-  labs( x= ' ', y = "biomass")+
+  labs( x= ' ', y = "Biomass")+
   facet_wrap(~Model, ncol = 3)+
   theme_bw() +
   theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
@@ -131,5 +131,5 @@ max <- stab.auc %>%
 levels(as.factor(auc$Limit))
 names(max)
 #### write csv ####
-write.csv(max, 'StabAlphaAUC2.csv' )
+write.csv(max, 'BEFD_createdData/StabAlphaAUC2.csv' )
 

@@ -672,7 +672,7 @@ write.csv(Limit3All, here('modelOutput/Loop','Limit3AlphaModelResults_press.csv'
 
 #### loop importing single model runs ####
 #Rausziehen der Dateipfade:
-setwd("~/Desktop/BEFD22/BEFDisturbance/Untitled/modelOutput/Loop")
+setwd("~/Desktop/phD/SpeciesContributionToStability/modelOutput/Loop")
 directory <- paste(getwd(),paste= '',sep = '') # hier sind meine Daten
 files <- dir(directory, recursive=TRUE, full.names=TRUE, pattern="\\.csv$")
 liste = list.files(pattern = "*.csv")
@@ -789,5 +789,6 @@ LRR.plot<-ggplot(data3, aes(x=timepoint, y=LRR,
 LRR.plot
 
 #### write csv ####
-write.csv2(data3,here('BEFD_createdData/LRRData2.csv'))
+setwd("~/Desktop/phD/SpeciesContributionToStability")
+write.csv(data3,here('BEFD_createdData/LRRData.csv'))
 
