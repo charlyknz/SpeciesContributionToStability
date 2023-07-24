@@ -15,9 +15,8 @@ dum<-zoo %>%
   filter(Treatment != 'Lake' & Replicate != 'lake') %>%# reduce dataset to experimental dataset
   group_by(Lake, Experiment, Treatment, Exp_day, Taxa) %>% 
   summarise(replicates = n())
-print(dum)#remove 
-dum1 <- filter(dum, replicates != 4)
-
+print(dum)
+rm(dum)#remove 
 
 ### Adjust data ###
 # to make sure our datasets from all different stations have reported species in the same way, 
@@ -37,7 +36,7 @@ zoo.data <- zoo %>%
 
 summary(zoo.data)
 
-### check if this works ###
+### check if complete() worked ###
 which(is.na(zoo$Biomass))
 
 #change names of Lakes
@@ -48,7 +47,7 @@ levels(zoo.data$Lake)[levels(zoo.data$Lake)=="Sva"] <- "Sto"    # Storjaen
 
 
 ## Control data ##
-# calculate a mean response for control to compare with 
+# calculate a mean response for control to calculate RR
 control.zoo <- zoo.data %>%
   filter(Treatment == 'C') %>%
   group_by(Lake, Experiment, Taxa, Exp_day) %>%
@@ -62,7 +61,6 @@ zoo.data2 <- zoo.data %>%
   group_by(Lake, Experiment, Treatment, Exp_day, Replicate) %>%
   mutate(treat.tot = sum(Biomass, na.rm = T),
          con.tot = sum(con.bio, na.rm = T),
-         LRR.tot = log(treat.tot/con.tot),
          deltabm.tot = (treat.tot - con.tot)/(treat.tot+con.tot))  #calculate tot.RR
 hist(zoo.data2$deltabm.tot)
 
@@ -77,16 +75,8 @@ zoo.data3 <- zoo.data2 %>%
   mutate(USI = paste(Lake, Experiment, Taxa, Replicate, Treatment, sep = '_')) #create Unique Identifier
 
 
-# create species specific Log Response Ratio (LRR) for biomass
-zoo.data3$LRR<-log(zoo.data3$Biomass/zoo.data3$con.bio)
-
-
 # create species specific change in biomass  (RR) 
 zoo.data3$RR<-(zoo.data3$Biomass-zoo.data3$con.bio)/(zoo.data3$Biomass+zoo.data3$con.bio)
-
-# the absence of species in control or treatment creates INF, get rid of these
-zoo.data3$LRR[zoo.data3$LRR=="Inf"]<-NA
-zoo.data3$LRR[zoo.data3$LRR=="-Inf"]<-NA
 
 # create species specific contribution (pi) to biomass for control and treat  (treat / tot)         ## contribution 
 zoo.data3$treat.pi <- zoo.data3$Biomass/zoo.data3$treat.tot
@@ -94,10 +84,6 @@ zoo.data3$con.pi <- zoo.data3$con.bio/zoo.data3$con.tot
 
 # create species specific LRR and difference for pi           (delta pi)            
 zoo.data3$delta.pi <- zoo.data3$treat.pi-zoo.data3$con.pi
-
-
-# create the deviance between species and community effect sizes                     
-zoo.data3$LRR.diff <- zoo.data3$LRR-zoo.data3$LRR.tot                                
 
 
 #### AUC calculation ####
@@ -112,7 +98,6 @@ zoo.stab.auc <- data.frame()
 # the following loops cycle through all unique cases (USI)
 USI <- unique(zoo.data3$USI)
 
- 
 
 for(i in 1:length(USI)){
   temp<-zoo.data3[zoo.data3$USI==USI[i], ]#creates a temporary data frame for each case
@@ -125,7 +110,7 @@ for(i in 1:length(USI)){
                    type = c("spline"),absolutearea = FALSE)
     mean.con.pi <- mean(temp$con.pi, na.rm = T)
     zoo.stab.auc<-rbind(zoo.stab.auc,
-                        data.frame(temp[1,c(1,2,4,5,6,19)],
+                        data.frame(temp[1,c(1,2,4,5,6,13)],
                                    AUC.RR,
                                    AUC.pi,
                                    AUC.totRR,
@@ -137,7 +122,7 @@ for(i in 1:length(USI)){
 str(zoo.stab.auc)
 
 
-# remove undefined Taxa #
+# remove undefined Taxa, pelagic species and Mosquito larvae #
 unique(zoo.stab.auc$Taxa)
 
 zoo.stab.auc.prefin <- zoo.stab.auc %>% 
@@ -158,7 +143,7 @@ zoo.stab.auc.prefin[zoo.stab.auc.prefin$Treatment == "S", "Treatment"] <- "Press
 zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 1] <- 'spring'
 zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 2] <- 'summer'
 
-
+### write csv ###
 #write.csv2(zoo.stab.auc.prefin, file = here('complete/AUCdata_3.csv'))
 
 
@@ -183,11 +168,12 @@ ggplot(zoo.stab.auc.prefin,  aes(AUC.pi, AUC.RR,color = Taxa )) +
   guides(color = guide_legend(override.aes = list(size = 3.5)))
 #ggsave(plot = last_plot(), file = here('output/ZooAUC_reps.png'), width = 10, height = 8)
 
-## Fig. 4 - AUC.RR and pi with errorbars ##
+## Fig. 4 - Mean absolute and relative contributions ##
+# calculate mean +- SE 
 zoo.stab.auc.mean <- zoo.stab.auc.prefin %>% 
   group_by(Taxa) %>%
-  mutate(mean.dom = mean(mean.con.pi)) %>% #calculate mean dominance for point size
-  dplyr::group_by(Taxa, Lake,Experiment, Treatment, mean.dom) %>% # for single dots use mutate here!! 
+  mutate(mean.dom = mean(mean.con.pi)) %>% #calculate relat. mean dominance for point size
+  dplyr::group_by(Taxa, Lake,Experiment, Treatment, mean.dom) %>% 
   dplyr::summarise(mean.AUC.RR = mean(AUC.RR, na.rm = T),
                 mean.AUC.pi = mean(AUC.pi, na.rm = T),
                 sd.AUC.RR = sd(AUC.RR, na.rm = T),
@@ -195,6 +181,9 @@ zoo.stab.auc.mean <- zoo.stab.auc.prefin %>%
                 se.AUC.RR = sd.AUC.RR/sqrt(n()),
                 se.AUC.pi = sd.AUC.pi/sqrt(n()))  
 
+unique(zoo.stab.auc.mean$Taxa)
+
+# plot 
 ggplot(zoo.stab.auc.mean,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
   geom_point(aes(shape = as.factor(Experiment), size = mean.dom), alpha = 0.5) +
   geom_errorbarh(aes(xmax = mean.AUC.pi + se.AUC.pi, xmin = mean.AUC.pi - se.AUC.pi))+
@@ -216,7 +205,7 @@ ggplot(zoo.stab.auc.mean,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
         strip.text.x  = element_text(size = 15, face = 'bold'),
         strip.text.y  = element_text(size = 15, face = 'plain'))+
   guides(color = guide_legend(override.aes = list(size = 3.5)))
-ggsave(plot = last_plot(), file = here('complete/Fig4.png'),width = 14, height = 10)
+ggsave(plot = last_plot(), file = here('ELE_Submission/Fig4.tiff'),width = 14, height = 10)
 
 ### look at two species exemplary ####
 zoo.stab.auc.mean %>%
@@ -243,7 +232,10 @@ zoo.stab.auc.mean %>%
         strip.text.y  = element_text(size = 15, face = 'plain'))+
   guides(color = guide_legend(override.aes = list(size = 3.5)))
 
+
 #### Sector counts ####
+### calculate how many percent of taxa are present in each sector 
+
 zoo.stab.auc.mean$Sector<- NA
 zoo.stab.auc.mean$Sector[zoo.stab.auc.mean$mean.AUC.pi>0&zoo.stab.auc.mean$mean.AUC.RR>0]<-1
 zoo.stab.auc.mean$Sector[zoo.stab.auc.mean$mean.AUC.pi>0&zoo.stab.auc.mean$mean.AUC.RR<0]<-2
@@ -251,7 +243,7 @@ zoo.stab.auc.mean$Sector[zoo.stab.auc.mean$mean.AUC.pi<0&zoo.stab.auc.mean$mean.
 zoo.stab.auc.mean$Sector[zoo.stab.auc.mean$mean.AUC.pi<0&zoo.stab.auc.mean$mean.AUC.RR>0]<-4
 zoo.stab.auc.mean$Sector[zoo.stab.auc.mean$mean.AUC.pi== 0 & zoo.stab.auc.mean$mean.AUC.RR==0] <-0
 
-
+# create df 
 sector.count<- zoo.stab.auc.mean%>%
   group_by( Sector) %>%
   count()%>%
@@ -261,4 +253,5 @@ sector.count<- zoo.stab.auc.mean%>%
   mutate(sum = sum(N, na.rm = T),
          relN = (N/sum)*100)
 
-unique(zoo.stab.auc.mean$Taxa)
+sector.count # output
+
