@@ -1,6 +1,6 @@
 # Model implementation species specific contribution to stability
 # in this script we explore the effects of species competition on system dynamics
-# by Dominik Bahlburg 
+# by Dominik Bahlburg & Charlotte Kunze
 
 #load packages and functions
 library(tidyverse)
@@ -687,8 +687,8 @@ liste = list.files(pattern = "*.csv")
 
 
 tibble <- list.files(pattern = "*.csv") %>%  #lists all files with csv ending in our wd
-  map_df(~read_csv(.)) #%>% #import data
-  #filter(survivingSpecies == 5)
+  map_df(~read_csv(.))  #import data
+ 
 #separate control data to rename columns
 all.con <-tibble%>%
   filter(runMeaning != 'withDisturbance') %>%
@@ -730,30 +730,17 @@ summary(data3)
 data3$RR<-data3$growth+data3$con.bio
 data3<-filter(data3, RR!=0)
 
-# create species specific LRR for biomass 
-data3$LRR<-log(data3$growth/data3$con.bio)
 #create species specific change in biomass
 data3$RR<-(data3$growth-data3$con.bio)/(data3$growth+data3$con.bio)
-#the absence of species in control or treatment creates INF, get rid of these
-data3$LRR[data3$LRR=="Inf"]<-NA
-data3$LRR[data3$LRR=="-Inf"]<-NA
 
 # create species specific contribution to biomass in each treatment
 data3$treat.pi<-data3$growth/data3$treat.tot
 data3$con.pi<-data3$con.bio/data3$con.tot
 
-# create species specific LRR and difference for pi
+# create species specific difference for pi
 data3$delta.pi<-data3$treat.pi-data3$con.pi
 which(is.na(data3$delta.pi))
 
-#weight LRR  by mean pi
-data3$mean.pi<-0.5*(data3$treat.pi+data3$con.pi)
-data3$LRR.w<-data3$LRR*data3$mean.pi
-data3$RR.w<-data3$RR*data3$mean.pi
-
-#create the deviance between species and community effect sizes
-data3$LRR.diff<-data3$LRR-data3$LRR.tot
-data3$LRR.diff.w<-data3$LRR.diff*data3$mean.pi
 summary(data3)
 str(data3)
 
@@ -774,7 +761,7 @@ delta.pi.plot<-ggplot(data3, aes(x=timepoint, y=delta.pi,
 delta.pi.plot
 
 
-LRR.plot<-ggplot(data3, aes(x=timepoint, y=LRR,
+RR.plot<-ggplot(data3, aes(x=timepoint, y=RR,
                             col=species, alpha = timepoint)) +
   theme_bw() +
   theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+   
@@ -785,10 +772,10 @@ LRR.plot<-ggplot(data3, aes(x=timepoint, y=LRR,
   # scale_y_continuous(limit = c(0.15, -0.1), breaks = seq(-0.1,0.1,0.05))  +
   geom_line()+
   xlab("time") +  ylab ("LRR biomass")+ ggtitle('LRR of multiple runs')+
-  facet_grid(~Model)
-LRR.plot
+  facet_grid(~Limit ~Model)
+RR.plot
 
 #### write csv ####
 setwd("~/Desktop/phD/SpeciesContributionToStability")
-write.csv(data3,here('BEFD_createdData/LRRData.csv'))
+write.csv(data3,here('BEFD_createdData/LRRData1.csv'))
 

@@ -1,8 +1,7 @@
-## Script to analyse simulated disturbance effects on community ## 
+#### Script to analyse species contributions in simulated communities #### 
 # by Charlotte Kunze
 
 ####load packages ####
-#library(reshape2)
 library(tidyverse)
 library(ggpubr)
 library(psych)
@@ -11,14 +10,15 @@ library(here)
 
 
 # import data
-Stab_Alpha_AUC_M5<- read.csv('BEFD_createdData/StabAlphaAUC2.csv')
+Stab_Alpha_AUC_M5<- read.csv('BEFD_createdData/StabAlphaAUC.csv') %>%
+  select(-X)
 str(Stab_Alpha_AUC_M5)
 
 #### Data wrangling ####
 stab.alpha <- Stab_Alpha_AUC_M5 %>%
   mutate(maximum = max(competition), #calculate maximum alpha 
         relAlpha= maximum/competition) %>%# to measure relative competitiveness calculate 1/relAlpha
-  distinct(species,relAlpha,Limit, sensitivity, runNumber, Model, AUC.RR, AUC.pi) %>%
+  select(species,relAlpha,Limit, runNumber, Model, AUC.RR, AUC.pi) %>%
   mutate(runID = paste(Model, runNumber, sep = '_')) 
   
 names(stab.alpha)
@@ -83,7 +83,7 @@ Lim2RRpi<-ggplot(subset(stab.alpha, Limit == 'Limit2'), aes(x=AUC.pi, y=AUC.RR,
                                                                   col=species,
                                                                   size= relAlpha)) +
   scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
- scale_y_continuous(limits = c(-27, 27), breaks = c(-20,-10,0,10,20))+
+ scale_y_continuous(limits = c(-30, 30), breaks = c(-20,-10,0,10,20))+
   scale_x_continuous(limits = c(-4, 4), breaks = c(-2,0,2))+
   geom_point(alpha= .3)+
   geom_hline(yintercept=0, col="grey")+
@@ -136,11 +136,15 @@ Lim3RRpi
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1RRpi, Lim2RRpi, Lim3RRpi,ncol = 1, nrow = 3, vjust = 3.0,hjust=-1.5,widths = c(1,1), labels = c( '(a)', '(b)', '(c)'))
-#ggsave(plot = last_plot(), width = 9, height =10, file = here('output/Fig.2.pdf'))
+ggsave(plot = last_plot(), width = 9, height =10, file = here('ELE_submission/Fig2.tiff'))
 
 hist(stab.alpha$relAlpha)
 
 #### Supplement Figure: relative competitiveness plot ####
+min(stab.alpha$relAlpha)
+max(stab.alpha$relAlpha)
+
+
 Lim1R<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=relAlpha, y=AUC.RR,
                                                             col=species)) +
   geom_hline(yintercept=0, col="grey")+
@@ -149,7 +153,7 @@ Lim1R<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=relAlpha, y=AUC.RR,
   labs(y = 'Absolute contribution to stability', x = "")+
   facet_wrap(~Model, ncol = 3)+
   scale_y_continuous(limits = c(-1.7, 1.1), breaks = c(-1.5,-1,-0.5,0,0.5,1))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
   theme_bw() +
   theme(strip.background =element_rect(),
         strip.text = element_text(size = 12, face = 'bold'))+
@@ -164,7 +168,7 @@ Lim1pi<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=relAlpha, y=AUC.pi,
   geom_point(alpha= .3, size = 2)+
   scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
   scale_y_continuous(limits = c(-0.1, 0.1), breaks = c(-0.1,-0.05,0,0.05,0.1))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
   labs(y = 'Relative contribution to stability', x = " ")+
   facet_wrap(~Model, ncol = 3)+
   theme_bw() +
@@ -180,7 +184,7 @@ Lim2R<-ggplot(subset(stab.alpha, Limit == 'Limit2'), aes(x=relAlpha, y=AUC.RR,
                                                             col=species)) +
   scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
   scale_y_continuous(limits = c(-33, 33), breaks = c(-30,-15,0,15,30))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
   geom_point(alpha= .3, size = 2)+
   geom_hline(yintercept=0, col="grey")+
   labs(y = 'Absolute contribution to stability', x = " ")+
@@ -197,7 +201,7 @@ Lim2pi<-ggplot(subset(stab.alpha, Limit == 'Limit2'), aes(x=relAlpha, y=AUC.pi,
                                                          col=species)) +
   scale_color_manual(values = c('#68789E', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
   scale_y_continuous(limits = c(-4, 4), breaks = c(-4,-2,0,2,4))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
   geom_point(alpha= .3, size = 2)+
   geom_hline(yintercept=0, col="grey")+
   labs(y = 'Relative contribution to stability', x = "")+
@@ -215,8 +219,8 @@ Lim3R<-ggplot(subset(stab.alpha, Limit == 'Limit3'), aes(x=relAlpha, y=AUC.RR,
   geom_point(alpha= .3, size = 2)+
   geom_hline(yintercept=0, col="grey")+
   scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
-  scale_y_continuous(limits = c(-30, 25), breaks = c(-30,-20,-10,0,10,20))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
+  scale_y_continuous(limits = c(-32, 25), breaks = c(-30,-20,-10,0,10,20))+
   labs(y='Absolute contribution to stability', x = "Relative competitiveness")+
   facet_wrap(~Model, ncol = 3)+
   theme_bw() +
@@ -231,8 +235,8 @@ Lim3pi<-ggplot(subset(stab.alpha, Limit == 'Limit3'), aes(x=relAlpha, y=AUC.pi,
   geom_point(alpha= .3, size = 2)+
   geom_hline(yintercept=0, col="grey")+
   scale_color_manual(values = c('#D56060', '#BEBEBE', '#BEBEBE', '#BEBEBE', '#BEBEBE'))+
-  scale_x_continuous(limits = c(0.99, 1.17), breaks = c(1,1.05,1.10,1.15))+
-  scale_y_continuous(limits = c(-3, 2.5), breaks = c(-3,-2,-1,0,1,2))+
+  scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
+  scale_y_continuous(limits = c(-3.5, 2.5), breaks = c(-3,-2,-1,0,1,2))+
   labs(y= 'Relative contribution to stability', x = "Relative competitiveness")+
   facet_wrap(~Model, ncol = 3)+
   theme_bw() +
@@ -245,6 +249,6 @@ Lim3pi#ggsave(plot = RRpi, 'RRPi.png',width = 8, height = 4)
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1R,Lim1pi,  Lim2R,Lim2pi,Lim3R,Lim3pi,hjust = -1, ncol = 2, nrow = 3, labels =  c( '(a)',' ', '(b)',' ', '(c)'))
-#ggsave(plot = last_plot(), width = 12, height = 12, file = here('output/Supplement_AllDist.png'))
+ggsave(plot = last_plot(), width = 14, height = 12, file = here('output/Supplement_AllDist.png'))
 
 
