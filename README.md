@@ -3,7 +3,7 @@ This repository contains all R code and data used for the framework on measuring
 
 
 There are two folders containing analyses and data creation for model simulations (BEFD_Analysis) and empirical data (SITES_Analysis).
-
+To run the code, please download the data available in Zenodo and store them in BEFD_createdData. For empirical data create a folder 'SITES_Data' and download the raw data via the SITES data portal (Langenheder et al. 2020). 
 
 R version 4.1.3 (2022-03-10)
 Platform: x86_64-apple-darwin17.0 (64-bit)
