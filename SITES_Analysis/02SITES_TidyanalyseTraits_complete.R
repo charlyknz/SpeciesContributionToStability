@@ -77,7 +77,7 @@ AUC.pi_mean.pi <- ggplot(Raw.dom.zoo, aes(x = relat.dom, y= mean.AUC.pi, color =
 AUC.pi_mean.pi 
 
 cowplot::plot_grid( AUC.RR_mean.pi, AUC.pi_mean.pi,ncol = 2,hjust = -1,labels = c('(a)','(b)', '(c)', '(d)'),rel_heights = c(2,3))
-ggsave(plot = last_plot(), width = 12, height = 5, file = here('ELE_Submission/Fig5.tiff'))
+#ggsave(plot = last_plot(), width = 12, height = 5, file = here('ELE_Submission/Fig5.tiff'))
 
 
 
@@ -120,5 +120,5 @@ corrPlot_pulsepressPi
 SITES_corr <- cowplot::plot_grid(corrPlot_press,corrPlot_pressPi,corrPlot_pulse,corrPlot_pulsePi,corrPlot_pulsepress,corrPlot_pulsepressPi, ncol = 2)
 SITES_corr
 
-ggsave(plot = SITES_corr, file = here('complete/SITES_correlation.png'), width = 8, height = 12)
+ggsave(plot = SITES_corr, file = here('ELE_submission/SITES_correlation.png'), width = 8, height = 12)
 
