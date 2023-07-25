@@ -20,7 +20,7 @@ str(data3)
 levels(as.factor(data3$species))
 Lim1LRR<-ggplot(subset(data3, Limit == 'Limit1' & runNumber == 3), aes(x=timepoint, y=growth,col=species)) +
   geom_line()+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   labs(x= ' ',  y = " ")+
   facet_wrap(~Model, ncol = 3)+
   theme_bw() +
@@ -53,7 +53,7 @@ Lim3LRR<-ggplot(subset(data3, Limit == 'Limit3'&runNumber == 27), aes(x=timepoin
 Lim3LRR
 
 cowplot::plot_grid(Lim1LRR, Lim2LRR, Lim3LRR,ncol = 1, nrow = 3, vjust = 1.7,hjust=0.05,label_size = 10,labels = c('a)', 'b)', 'c)'), rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 8, height = 7, file = here('output/Fig.1_Biomass.png'))
+ggsave(plot = last_plot(), width = 8, height = 7, file = here('ELE_Submission/Fig.1_Biomass.png'))
 
 
 ### create USI ####

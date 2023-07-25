@@ -52,7 +52,7 @@ Lim1RRpi<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=AUC.pi, y=AUC.RR,
   geom_point(alpha= .3)+
   geom_text(data = TextLim1, inherit.aes = F, aes(x = x, y = y, label = text), size = 3.4, hjust = 0) +
   geom_rect(data = rectLim1, inherit.aes = F,mapping = aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2), fill = NA, colour = '#bababa') +
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   scale_y_continuous(limits = c(-6, 6), breaks = c(-4,-2,0,2,4))+
   scale_x_continuous(limits = c(-4, 4), breaks = c(-2,0,2))+
   labs(x = '',y = " ")+
@@ -149,7 +149,7 @@ Lim1R<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=relAlpha, y=AUC.RR,
                                                             col=species)) +
   geom_hline(yintercept=0, col="grey")+
   geom_point(alpha= .3, size = 2)+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   labs(y = 'Absolute contribution to stability', x = "")+
   facet_wrap(~Model, ncol = 3)+
   scale_y_continuous(limits = c(-1.7, 1.1), breaks = c(-1.5,-1,-0.5,0,0.5,1))+
@@ -166,7 +166,7 @@ Lim1pi<-ggplot(subset(stab.alpha, Limit == 'Limit1'), aes(x=relAlpha, y=AUC.pi,
                                                           col=species)) +
   geom_hline(yintercept=0, col="grey")+
   geom_point(alpha= .3, size = 2)+
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   scale_y_continuous(limits = c(-0.1, 0.1), breaks = c(-0.1,-0.05,0,0.05,0.1))+
   scale_x_continuous(limits = c(0.98, 1.21), breaks = c(1,1.05,1.10,1.15))+
   labs(y = 'Relative contribution to stability', x = " ")+

@@ -50,7 +50,7 @@ Dom1R<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.RR,
   geom_point(alpha= .3, size = 2)+
   geom_text(data = TextLim1rect, inherit.aes = F, aes(x = x, y = y, label = text), size = 4, hjust = 0) +
   geom_rect(data = rectLim1R, inherit.aes = F,mapping = aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2), fill = NA, colour = '#bababa') +
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   labs(y = 'Absolute contribution to stability', x = "")+
   facet_wrap(~Model, ncol = 3, labeller = labeller(Model = labeller_stab))+
   scale_y_continuous(limits = c(-1.7, 1.2), breaks = c(-1.5,-1,-0.5,0,0.5,1),labels=scaleFUN)+
@@ -79,7 +79,7 @@ Dom1pi<-ggplot(subset(stab.auc, Limit == 'Limit1'), aes(x=mean.con.pi, y=AUC.pi,
   geom_point(alpha= .3, size = 2)+
   #  geom_text(data = TextLim1rectPi, inherit.aes = F, aes(x = x, y = y, label = text), size = 4, hjust = 0) +
   #  geom_rect(data = rectLim1pi, inherit.aes = F,mapping = aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2), fill = NA, colour = '#bababa') +
-  scale_color_manual(values = c('#68789E', '#68789E', '#68789E', '#68789E', '#68789E'))+
+  scale_color_manual(values = c('#D56060', '#D56060', '#D56060', '#D56060', '#D56060'))+
   scale_y_continuous(limits = c(-0.1, 0.11), breaks = c(-0.1,-0.05,0,0.05,0.1),labels=scaleFUN)+
   labs(y = 'Relative contribution to stability', x = " ")+
   facet_wrap(~Model, ncol = 3, labeller = labeller(Model = labeller_stab))+
