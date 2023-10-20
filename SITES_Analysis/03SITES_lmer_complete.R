@@ -11,7 +11,7 @@ library(lme4)
 library(sjPlot)
 
 #### read data ####
-data<-read.csv2("~/Desktop/phD/SpeciesContributionToStability/complete/AUCdata_3.csv")
+data<-read.csv2("~/Desktop/phD/SpeciesContributionToStability/OutputSubmission/AUCdata_3.csv")
 summary(data)
 unique(data$Taxa)
 
@@ -51,5 +51,5 @@ summary(mod6.presspulse.aucPI)
 #### summary table for the model outputs ####
 tab_model(mod1.press.aucRR,mod2.press.aucPI,mod3.pulse.aucRR,
           mod4.pulse.aucPI,mod5.presspulse.aucRR,
-          mod6.presspulse.aucPI,digits = 4, show.ci = FALSE, file = here("ELE_Submission/supplementaryTable2.doc"))
+          mod6.presspulse.aucPI,digits = 4, show.ci = FALSE, file = here("OutputSubmission/supplementaryTable2.doc"))
 

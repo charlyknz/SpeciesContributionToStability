@@ -11,7 +11,7 @@ library(ggpubr)
 #### data ####
 data <- zoo.stab.auc.prefin # run 01 before
  # or import
-data <- read.csv2('~/Desktop/phD/SpeciesContributionToStability/complete/AUCdata_3.csv', sep = ';')
+data <- read.csv2('~/Desktop/phD/SpeciesContributionToStability/OutputSubmission/AUCdata_3.csv', sep = ';')
 
 #check import
 str(data)
@@ -77,7 +77,7 @@ AUC.pi_mean.pi <- ggplot(Raw.dom.zoo, aes(x = relat.dom, y= mean.AUC.pi, color =
 AUC.pi_mean.pi 
 
 cowplot::plot_grid( AUC.RR_mean.pi, AUC.pi_mean.pi,ncol = 2,hjust = -1,labels = c('(a)','(b)', '(c)', '(d)'),rel_heights = c(2,3))
-#ggsave(plot = last_plot(), width = 12, height = 5, file = here('ELE_Submission/Fig5.tiff'))
+ggsave(plot = last_plot(), width = 12, height = 5, file = here('OutputSubmission/Fig5.tiff'))
 
 
 
@@ -120,5 +120,40 @@ corrPlot_pulsepressPi
 SITES_corr <- cowplot::plot_grid(corrPlot_press,corrPlot_pressPi,corrPlot_pulse,corrPlot_pulsePi,corrPlot_pulsepress,corrPlot_pulsepressPi, ncol = 2)
 SITES_corr
 
-ggsave(plot = SITES_corr, file = here('ELE_submission/SITES_correlation.png'), width = 8, height = 12)
+ggsave(plot = SITES_corr, file = here('OutputSubmission/SITES_correlation_magn.png'), width = 8, height = 12)
+
+### negative and positive correlation ###
+## Press perturbation
+corrPlot_press <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Press'), y = 'mean.AUC.RR', x = 'relat.dom',cor.method = 'spearman',
+                            ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_press
+
+corrPlot_pressPi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Press'), y = 'mean.AUC.pi', x = 'relat.dom',cor.method = 'spearman',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pressPi
+
+## Pulse perturbation
+corrPlot_pulse <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse'), y = 'mean.AUC.RR', x = 'relat.dom',cor.method = 'spearman',ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulse
+
+corrPlot_pulsePi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse'), y = 'mean.AUC.pi', x = 'relat.dom',cor.method = 'spearman',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsePi
+
+## Pulse & Press perturbation
+corrPlot_pulsepress <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse & Press'), y = 'mean.AUC.RR', x = 'relat.dom',cor.method = 'spearman',ylab = 'Absolute Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsepress
+
+corrPlot_pulsepressPi <- ggscatter(subset(Raw.dom.zoo, Treatment == 'Pulse & Press'), y = 'mean.AUC.pi', x = 'relat.dom',cor.method = 'spearman',ylab = 'Relative Contribution to stability', xlab = 'Relative dominance',add = 'reg.line', conf.int = T)  +
+  stat_cor( label.x = 0.1) 
+corrPlot_pulsepressPi
+
+#one plot for all correlation plot
+SITES_corr <- cowplot::plot_grid(corrPlot_press,corrPlot_pressPi,corrPlot_pulse,corrPlot_pulsePi,corrPlot_pulsepress,corrPlot_pulsepressPi, ncol = 2)
+SITES_corr
+
+ggsave(plot = SITES_corr, file = here('OutputSubmission/SITES_correlation_raw.png'), width = 8, height = 12)
 

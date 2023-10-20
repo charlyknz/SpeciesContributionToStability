@@ -102,12 +102,12 @@ USI <- unique(zoo.data3$USI)
 for(i in 1:length(USI)){
   temp<-zoo.data3[zoo.data3$USI==USI[i], ]#creates a temporary data frame for each case
   if(dim(temp)[1]>2){#does the next step only if at least 3 data points are present
-    AUC.RR<-auc(temp$Exp_day, temp$RR,  from = min(0, na.rm = TRUE), to = max(temp$Exp_day, na.rm = TRUE),
-                type = c("spline"),absolutearea = FALSE)
-    AUC.pi<-auc(temp$Exp_day, temp$delta.pi, from = min(0, na.rm = TRUE), to = max(temp$Exp_day, na.rm = TRUE),
-                type = c("spline"),absolutearea = FALSE)
-    AUC.totRR<-auc(temp$Exp_day, temp$deltabm.tot, from = min(0, na.rm = TRUE), to = max(temp$Exp_day, na.rm = TRUE),
-                   type = c("spline"),absolutearea = FALSE)
+    AUC.RR<-auc(temp$Exp_day, temp$RR,  from = min(temp$Exp_day, na.rm = TRUE), to = max(temp$Exp_day, na.rm = TRUE),
+                type = c("linear"),absolutearea = FALSE)
+    AUC.pi<-auc(temp$Exp_day, temp$delta.pi, from = min(temp$Exp_day, na.rm = TRUE), to = max(temp$Exp_day, na.rm = TRUE),
+                type = c("linear"),absolutearea = FALSE)
+    AUC.totRR<-auc(temp$Exp_day, temp$deltabm.tot, from = min(temp$Exp_day, na.rm = T), to = max(temp$Exp_day, na.rm = TRUE),
+                   type = c("linear"),absolutearea = FALSE)
     mean.con.pi <- mean(temp$con.pi, na.rm = T)
     zoo.stab.auc<-rbind(zoo.stab.auc,
                         data.frame(temp[1,c(1,2,4,5,6,13)],
@@ -144,7 +144,7 @@ zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 1] <- 'spring'
 zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 2] <- 'summer'
 
 ### write csv ###
-#write.csv2(zoo.stab.auc.prefin, file = here('complete/AUCdata_3.csv'))
+write.csv2(zoo.stab.auc.prefin, file = here('OutputSubmission/AUCdata_3.csv'))
 
 
 #### AUC Plots ####
@@ -205,13 +205,13 @@ ggplot(zoo.stab.auc.mean,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
         strip.text.x  = element_text(size = 15, face = 'bold'),
         strip.text.y  = element_text(size = 15, face = 'plain'))+
   guides(color = guide_legend(override.aes = list(size = 3.5)))
-ggsave(plot = last_plot(), file = here('ELE_Submission/Fig4.tiff'),width = 14, height = 10)
+ggsave(plot = last_plot(), file = here('OutputSubmission/Fig4.tiff'),width = 14, height = 10)
 
 ### look at two species exemplary ####
 zoo.stab.auc.mean %>%
   filter(Taxa %in%c('Bosmina', 'Keratella') ) %>%
   ggplot(.,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
-  geom_point(aes(shape = as.factor(Experiment), size = mean.dom), alpha = 0.5) +
+  geom_point(aes(shape = as.factor(Experiment)), alpha = 0.5, size = 2) +
   geom_errorbarh(aes(xmax = mean.AUC.pi + se.AUC.pi, xmin = mean.AUC.pi - se.AUC.pi))+
   geom_errorbar(aes(ymax = mean.AUC.RR + se.AUC.RR, ymin = mean.AUC.RR - se.AUC.RR))+
   geom_vline(xintercept = 0, alpha = 0.25) +                                      
