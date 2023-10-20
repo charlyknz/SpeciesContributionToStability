@@ -8,7 +8,7 @@ library(MESS) #https://rdrr.io/cran/MESS/man/auc.html
 library(ggpubr)
 library(psych)
 library(cowplot)
-
+library(here)
 
 #### import data ####
 data3<- read.csv('BEFD_createdData/LRRData1.csv')
@@ -53,7 +53,7 @@ Lim3LRR<-ggplot(subset(data3, Limit == 'Limit3'&runNumber == 27), aes(x=timepoin
 Lim3LRR
 
 cowplot::plot_grid(Lim1LRR, Lim2LRR, Lim3LRR,ncol = 1, nrow = 3, vjust = 1.7,hjust=0.05,label_size = 10,labels = c('a)', 'b)', 'c)'), rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 8, height = 7, file = here('ELE_Submission/Fig.1_Biomass.png'))
+ggsave(plot = last_plot(), width = 8, height = 7, file = here('OutputSubmission/Fig.1_Biomass.png'))
 
 
 ### create USI ####
@@ -83,13 +83,20 @@ stab.auc <- data.frame()#opens empty data frame
 for(i in 1:length(USI)){
   temp<-auc[auc$USI==USI[i], ]#creates a temporary data frame for each case
   {
-    AUC.pi<- auc(temp$timepoint, temp$delta.pi, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T), type = c("spline"),absolutearea = FALSE, na.rm = T)
-    AUC.RR<-auc(temp$timepoint, temp$RR,  from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),type = c("spline"),absolutearea = FALSE, na.rm = FALSE)
-    AUC.totRR<-auc(temp$timepoint,temp$deltabm.tot, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),
+    AUC.pi.spline<- auc(temp$timepoint, temp$delta.pi, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T), type = c("spline"),absolutearea = FALSE, na.rm = T)
+    AUC.RR.spline<-auc(temp$timepoint, temp$RR,  from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),type = c("spline"),absolutearea = FALSE, na.rm = FALSE)
+    AUC.totRR.spline<-auc(temp$timepoint,temp$deltabm.tot, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),
                    type = c("spline"),absolutearea = FALSE,  na.rm = FALSE)
-        mean.con.pi <- mean(temp$con.pi)
+    AUC.pi<- auc(temp$timepoint, temp$delta.pi, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T), type = c("linear"),absolutearea = FALSE, na.rm = T)
+    AUC.RR<-auc(temp$timepoint, temp$RR,  from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),type = c("linear"),absolutearea = FALSE, na.rm = FALSE)
+    AUC.totRR<-auc(temp$timepoint,temp$deltabm.tot, from = min(temp$timepoint, na.rm = T), to = max(temp$timepoint,na.rm = T),
+                   type = c("linear"),absolutearea = FALSE,  na.rm = FALSE)
+    mean.con.pi <- mean(temp$con.pi)
     stab.auc<-rbind(stab.auc,
                     data.frame(temp[1,c(3,4,5,7,9,10,20)],
+                               AUC.RR.spline,
+                               AUC.pi.spline,
+                               AUC.totRR.spline,
                                AUC.RR,
                                AUC.pi,
                                AUC.totRR,mean.con.pi))
@@ -109,5 +116,5 @@ names(stab.auc)
 levels(as.factor(auc$Limit))
 
 #### write csv ####
-write.csv(max, 'BEFD_createdData/StabAlphaAUC.csv' )
+write.csv(stab.auc, 'BEFD_createdData/StabAlphaAUC.csv' )
 

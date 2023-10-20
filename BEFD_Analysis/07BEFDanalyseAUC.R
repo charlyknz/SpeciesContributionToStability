@@ -136,7 +136,7 @@ Lim3RRpi
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1RRpi, Lim2RRpi, Lim3RRpi,ncol = 1, nrow = 3, vjust = 3.0,hjust=-1.5,widths = c(1,1), labels = c( '(a)', '(b)', '(c)'))
-ggsave(plot = last_plot(), width = 9, height =10, file = here('ELE_submission/Fig2.tiff'))
+ggsave(plot = last_plot(), width = 9, height =10, file = here('OutputSubmission/Fig2.pdf'))
 
 hist(stab.alpha$relAlpha)
 
@@ -249,6 +249,6 @@ Lim3pi#ggsave(plot = RRpi, 'RRPi.png',width = 8, height = 4)
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1R,Lim1pi,  Lim2R,Lim2pi,Lim3R,Lim3pi,hjust = -1, ncol = 2, nrow = 3, labels =  c( '(a)',' ', '(b)',' ', '(c)'))
-ggsave(plot = last_plot(), width = 14, height = 12, file = here('output/Supplement_AllDist.png'))
+ggsave(plot = last_plot(), width = 14, height = 12, file = here('OutputSubmission/Supplement_AllDist.png'))
 
 
