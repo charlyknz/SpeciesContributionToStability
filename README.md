@@ -18,9 +18,9 @@ after opening the project.
 
 All scripts should then work as they are when the required input-files are in the correct locations (look at the file paths specified in the scripts)
 
-**To run the code**, please open the Rproject SpeciesContributionToStability and the file Main.R and follow the instructions: Download the simulation and empirical data available in Zenodo and store them in BEFD_createdData and SITES_Data, which will be created in the Main.R file, respectively. 
+**To run the code**, please open the Rproject *SpeciesContributionToStability.Rproj* and the file *Main.R* and follow the instructions: Download the simulation and empirical data available in Zenodo and store them in "BEFD_createdData" and "SITES_Data", which will be created in the *Main.R* file, respectively. 
 
-Output files are stored in the folder “OutputSubmission”, which will also be created in the Main.R file
+Output files are stored in the folder “OutputSubmission”, which will also be created in the *Main.R* file
 
 
 
