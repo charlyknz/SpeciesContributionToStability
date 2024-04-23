@@ -1,7 +1,7 @@
 # SpeciesContributionToStability
 This repository contains all R code and data used for the framework on measuring species net contribution to functional stability after perturbation
 
-Zenodo: https://doi.org/10.5281/zenodo.10027062
+Zenodo: [https://doi.org/10.5281/zenodo.10027062] (https://doi.org/10.5281/zenodo.11046700)
 
 R version 4.1.3 (2022-03-10)
 
@@ -18,7 +18,7 @@ after opening the project.
 
 All scripts should then work as they are when the required input-files are in the correct locations (look at the file paths specified in the scripts)
 
-**To run the code**, please open Main.R and follow the instructions: Download the simulation and empirical data available in Zenodo and store them in BEFD_createdData and SITES_Data, which will be created in the Main.R file, respectively. 
+**To run the code**, please open the Rproject SpeciesContributionToStability and the file Main.R and follow the instructions: Download the simulation and empirical data available in Zenodo and store them in BEFD_createdData and SITES_Data, which will be created in the Main.R file, respectively. 
 
 Output files are stored in the folder “OutputSubmission”, which will also be created in the Main.R file
 
