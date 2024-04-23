@@ -9,9 +9,10 @@ graphics.off()
 library(tidyverse)
 library(lme4)
 library(sjPlot)
+library(here)
 
 #### read data ####
-data<-read.csv2("~/Desktop/phD/SpeciesContributionToStability/OutputSubmission/AUCdata_3.csv")
+data <- read_csv('OutputSubmission/AUCdata_3.csv')
 summary(data)
 unique(data$Taxa)
 

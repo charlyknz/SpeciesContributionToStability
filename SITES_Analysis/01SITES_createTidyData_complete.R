@@ -1,6 +1,6 @@
-#### R script to calculate AUCs for SITES Data ####
-# 19.05.2023
+#### R script to calculate species contributions to stability for SITES Data ####
 
+#packages
 library(tidyverse)
 library(here)
 library(MESS)
@@ -28,23 +28,20 @@ rm(dum)#remove
 zoo.data <- zoo %>%
   filter(Treatment != 'Lake' ) %>% # reduce dataset to experimental dataset
   filter(!Replicate %in%c('Lake', 'lake')) %>%
-  select(Lake, Experiment, Treatment, Exp_day, Replicate, Taxa, Abundance,Clean_Biomass)%>%
+  select(Lake, Experiment, Treatment, Mean_lenght, Exp_day, Replicate, Taxa, Abundance,Clean_Biomass)%>%
   group_by(Lake, Experiment)%>%
   complete(Treatment, Exp_day,Taxa, Replicate, fill = list(Biomass = 0)) %>% # have Biomass which is NA as 0 to calculate the correct mean here 
   mutate(Clean_Biomass = as.numeric(Clean_Biomass)) %>%
   rename(Biomass = Clean_Biomass)
-
+zoo.data$Biomass[is.na(zoo.data$Biomass)]<-0
 summary(zoo.data)
 
 ### check if complete() worked ###
-which(is.na(zoo$Biomass))
+which(is.na(zoo.data$Biomass))
 
-#change names of Lakes
-levels(zoo.data$Lake)[levels(zoo.data$Lake)=="Asa"] <- "Fer"    # Feresjoen
-levels(zoo.data$Lake)[levels(zoo.data$Lake)=="Sko"] <- "Ers"    # Erssjoen
-levels(zoo.data$Lake)[levels(zoo.data$Lake)=="Sva"] <- "Sto"    # Storjaen
+#saveRDS(zoo.data, file = here('SITES_Data/ZooData.RDS'))
 
-
+#### Calculation of Response ratios ####
 
 ## Control data ##
 # calculate a mean response for control to calculate RR
@@ -109,12 +106,14 @@ for(i in 1:length(USI)){
     AUC.totRR<-auc(temp$Exp_day, temp$deltabm.tot, from = min(temp$Exp_day, na.rm = T), to = max(temp$Exp_day, na.rm = TRUE),
                    type = c("linear"),absolutearea = FALSE)
     mean.con.pi <- mean(temp$con.pi, na.rm = T)
+    mean.treat.pi <- mean(temp$treat.pi, na.rm = T)
     zoo.stab.auc<-rbind(zoo.stab.auc,
                         data.frame(temp[1,c(1,2,4,5,6,13)],
                                    AUC.RR,
                                    AUC.pi,
                                    AUC.totRR,
-                                   mean.con.pi))
+                                   mean.con.pi,
+                                   mean.treat.pi))
     rm(temp)
   }
 }
@@ -144,12 +143,12 @@ zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 1] <- 'spring'
 zoo.stab.auc.prefin$Experiment[zoo.stab.auc.prefin$Experiment == 2] <- 'summer'
 
 ### write csv ###
-write.csv2(zoo.stab.auc.prefin, file = here('OutputSubmission/AUCdata_3.csv'))
+write_csv(zoo.stab.auc.prefin, file = here('OutputSubmission/AUCdata_3.csv'))
 
 
 #### AUC Plots ####
 ggplot(zoo.stab.auc.prefin,  aes(AUC.pi, AUC.RR,color = Taxa )) +
-  geom_point(aes(shape = as.factor(Experiment),size = mean.con.pi), alpha = 0.5) +
+  geom_point(aes(shape = as.factor(Experiment)), alpha = 0.5) +
   geom_vline(xintercept = 0, alpha = 0.25) +                                      
   geom_hline(yintercept = 0, alpha = 0.25) +
   facet_grid(Lake~Treatment, scales = 'free') +
@@ -166,7 +165,6 @@ ggplot(zoo.stab.auc.prefin,  aes(AUC.pi, AUC.RR,color = Taxa )) +
         legend.title = element_text(size = 15),
         legend.text = element_text(size = 6)) +
   guides(color = guide_legend(override.aes = list(size = 3.5)))
-#ggsave(plot = last_plot(), file = here('output/ZooAUC_reps.png'), width = 10, height = 8)
 
 ## Fig. 4 - Mean absolute and relative contributions ##
 # calculate mean +- SE 
@@ -185,9 +183,9 @@ unique(zoo.stab.auc.mean$Taxa)
 
 # plot 
 ggplot(zoo.stab.auc.mean,aes(mean.AUC.pi, mean.AUC.RR,color = Taxa )) +
-  geom_point(aes(shape = as.factor(Experiment), size = mean.dom), alpha = 0.5) +
   geom_errorbarh(aes(xmax = mean.AUC.pi + se.AUC.pi, xmin = mean.AUC.pi - se.AUC.pi))+
   geom_errorbar(aes(ymax = mean.AUC.RR + se.AUC.RR, ymin = mean.AUC.RR - se.AUC.RR))+
+  geom_point(aes(shape = as.factor(Experiment)), alpha = 0.5, size = 2.5) +
   geom_vline(xintercept = 0, alpha = 0.25) +                                      
   geom_hline(yintercept = 0, alpha = 0.25) +
   facet_grid(Lake~Treatment, scales = 'free') +
@@ -254,4 +252,139 @@ sector.count<- zoo.stab.auc.mean%>%
          relN = (N/sum)*100)
 
 sector.count # output
+
+#### Compensatory Dynamics analysis ####
+names(zoo.stab.auc.prefin)
+
+
+zoo.stab.auc.prefin$Sector<- NA
+zoo.stab.auc.prefin$Sector[zoo.stab.auc.prefin$AUC.pi>0&zoo.stab.auc.prefin$AUC.RR>0]<-1
+zoo.stab.auc.prefin$Sector[zoo.stab.auc.prefin$AUC.pi>0&zoo.stab.auc.prefin$AUC.RR<0]<-2
+zoo.stab.auc.prefin$Sector[zoo.stab.auc.prefin$AUC.pi<0&zoo.stab.auc.prefin$AUC.RR<0]<-3
+zoo.stab.auc.prefin$Sector[zoo.stab.auc.prefin$AUC.pi<0&zoo.stab.auc.prefin$AUC.RR>0]<-4
+zoo.stab.auc.prefin$Sector[zoo.stab.auc.prefin$AUC.pi== 0 & zoo.stab.auc.prefin$AUC.RR==0] <-0
+
+AUCsum <- zoo.stab.auc.prefin %>%
+  group_by(Lake, Experiment, Treatment, Sector, Replicate) %>%
+  summarise(sum.RR = sum(AUC.RR),
+            sum.pi = sum(AUC.pi))
+
+
+spring <- AUCsum %>%
+  filter(Experiment == 'spring') %>%
+  group_by(Lake, Experiment, Treatment, Sector) %>%
+  summarise(mean.RR = mean(sum.RR),
+            mean.pi = mean(sum.pi),
+            sd.RR = sd(sum.RR),
+            sd.pi = sd(sum.pi),
+            se.RR = sd.RR / sqrt(n()),
+            se.pi = sd.pi / sqrt(n())) %>%
+ggplot(., aes(x = Sector, y = mean.pi, fill = as.factor(Sector)))+
+  geom_errorbar(aes(ymin = mean.pi - se.pi, ymax = mean.pi + se.pi))+
+  geom_col(color = 'black')+
+  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
+  labs(y = 'Total Relative Contribution to Stability', fill = 'Sector', title = 'Spring Experiment')+
+  geom_hline(yintercept = 0)+
+  facet_grid(~Lake~Treatment)+
+  theme_bw()
+
+spring.rr <- AUCsum %>%
+  summarise(mean.RR = mean(sum.RR),
+            mean.pi = mean(sum.pi),
+            sd.RR = sd(sum.RR),
+            sd.pi = sd(sum.pi),
+            se.RR = sd.RR / sqrt(n()),
+            se.pi = sd.pi / sqrt(n())) %>%
+  filter(Experiment == 'spring') %>%
+  ggplot(., aes(x = Sector, y = mean.RR, fill = as.factor(Sector)))+
+  geom_errorbar(aes(ymin = mean.RR - se.RR, ymax = mean.RR + se.RR))+
+  geom_col(color = 'black')+
+  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
+  labs(y = 'Total Absolute Contribution to Stability', fill = 'Sector', title = 'Spring Experiment')+
+  geom_hline(yintercept = 0)+
+  facet_grid(~Lake~Treatment)+
+  theme_bw()
+
+
+cowplot::plot_grid(spring, spring.rr, ncol = 1, labels = c('(a)', '(b)'))
+ggsave(plot = last_plot(), file = here('OutputSubmission/FigS3_AUCcontribution_spring.tiff'), width = 7, height = 14)
+
+summer <- AUCsum %>%
+  filter(Experiment == 'summer') %>%
+  group_by(Lake, Experiment, Treatment, Sector) %>%
+  summarise(mean.RR = mean(sum.RR),
+            mean.pi = mean(sum.pi),
+            sd.RR = sd(sum.RR),
+            sd.pi = sd(sum.pi),
+            se.RR = sd.RR / sqrt(n()),
+            se.pi = sd.pi / sqrt(n())) %>%
+  drop_na(Sector)%>%
+  ggplot(., aes(x = Sector, y = mean.pi, fill = as.factor(Sector)))+
+  geom_errorbar(aes(ymin = mean.pi - se.pi, ymax = mean.pi + se.pi))+
+  geom_col(color = 'black')+
+  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
+  labs(y = 'Total Relative Contribution to Stability', fill = 'Sector', title = 'Summer Experiment')+
+  geom_hline(yintercept = 0)+
+  facet_grid(~Lake~Treatment)+
+  theme_bw()
+
+summer.rr <- AUCsum %>%
+  summarise(mean.RR = mean(sum.RR),
+            mean.pi = mean(sum.pi),
+            sd.RR = sd(sum.RR),
+            sd.pi = sd(sum.pi),
+            se.RR = sd.RR / sqrt(n()),
+            se.pi = sd.pi / sqrt(n())) %>%
+  filter(Experiment == 'summer') %>%
+  drop_na(Sector)%>%
+  ggplot(., aes(x = Sector, y = mean.RR, fill = as.factor(Sector)))+
+  geom_errorbar(aes(ymin = mean.RR - se.RR, ymax = mean.RR + se.RR))+
+  geom_col(color = 'black')+
+  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
+  labs(y = 'Total Absolute Contribution to Stability', fill = 'Sector', title = 'Summer Experiment')+
+  geom_hline(yintercept = 0)+
+  facet_grid(~Lake~Treatment)+
+  theme_bw()
+
+
+cowplot::plot_grid(summer, summer.rr, ncol = 1, labels = c('(a)', '(b)'))
+ggsave(plot = last_plot(), file = here('OutputSubmission/FigS4_AUCcontribution_summer.tiff'), width = 7, height = 14)
+
+
+### Total biomass over time ###
+Total.zoo <- zoo.data 
+
+Total.zoo[Total.zoo$Lake == "Asa", "Lake"] <- "Feresjörn"
+Total.zoo[Total.zoo$Lake == "Erk", "Lake"] <- "Erken"
+Total.zoo[Total.zoo$Lake == "Sva", "Lake"] <- "Stortjärn"
+Total.zoo[Total.zoo$Lake == "Sko", "Lake"] <- "Erssjön"
+Total.zoo[Total.zoo$Lake == "Bol", "Lake"] <- "Bolmen"
+
+Total.zoo[Total.zoo$Treatment == "C", "Treatment"] <- "Control"
+Total.zoo[Total.zoo$Treatment == "F", "Treatment"] <- "Pulse"
+Total.zoo[Total.zoo$Treatment == "FS", "Treatment"] <- "Pulse & Press"
+Total.zoo[Total.zoo$Treatment == "S", "Treatment"] <- "Press"
+
+Total.zoo$Experiment[Total.zoo$Experiment == 1] <- 'spring'
+Total.zoo$Experiment[Total.zoo$Experiment == 2] <- 'summer'
+
+Total.zoo%>%
+  group_by(Lake, Experiment, Treatment, Exp_day, Replicate)%>%
+  summarise(sum = sum(Biomass))%>%
+  group_by(Lake, Experiment, Treatment, Exp_day)%>%
+  summarise(mean = mean(sum),
+            sd = sd(sum),
+            se = sd/sqrt(n())) %>%
+  ggplot(., aes (x = Exp_day, y = mean, color = Treatment))+
+  geom_line()+
+  geom_errorbar(aes(ymin = mean-se, ymax = mean+se), width = .7)+
+  geom_point()+
+  scale_color_manual(values = c('black', '#DF536B', '#61D04F', '#2297E6'))+
+  labs(x= 'Time [days]', y = expression(Total~Biomass~'['~mu*g*L^{-1}~']'))+
+  facet_grid(~Lake~Experiment, scale = 'free_y')+
+  theme_bw()+
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())  
+
+ggsave(plot = last_plot(), file = here('OutputSubmission/FigS5_TotalBiomass.tiff'), width = 8, height = 8)
+
 
