@@ -4,12 +4,15 @@
 # 1. Check your working directory, if not done, please set to the main folder 
 getwd()
 
-# 2. load package here
+# 2. Load package here
 library(here)
 
-#3. download data from Zenodo and store in the following folders:
+#3. Download data from Zenodo and store in the following folders:
 dir.create(here('BEFD_createdData')) 
 dir.create(here('SITES_Data')) 
+
+# Before running create submission folder
+dir.create(here('OutputSubmission')) 
 
 #4. Model simulations
 
