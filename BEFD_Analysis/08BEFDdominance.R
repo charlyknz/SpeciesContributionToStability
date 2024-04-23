@@ -223,152 +223,27 @@ ggsave(plot = last_plot(), width = 12, height = 12, file = here('OutputSubmissio
 
 #### correlations ####
 
-#### absolute Values for correlations ####
-
-## Magnitude of relative contributions ##
-# press 
-Lim1press <- stab.auc %>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  filter(Model == 'press' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim1press
-
-Lim23press <- stab.auc %>%
-  filter(Model == 'press' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23press
-
-
-# pulse 
-Lim1pulse <- stab.auc %>%
-  filter(Model == 'pulse' & Limit == 'Limit1') %>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim1pulse
-
-Lim23pulse <- stab.auc %>%
-  filter(Model == 'pulse' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23pulse
-
-# pulsepress 
-Lim1pulsepress <- stab.auc %>%
-  filter(Model == 'pulsepress' & Limit == 'Limit1') %>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim1pulsepress
-
-Lim23pulsepress <- stab.auc %>%
-  filter(Model == 'pulsepress' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.pi = abs(AUC.pi)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of relative contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23pulsepress
-
-
-corrRelaPos<- cowplot::plot_grid(  Lim1press,Lim23press, Lim1pulse,Lim23pulse,Lim1pulsepress, Lim23pulsepress,ncol = 2 )
-corrRelaPos
-
-ggsave(plot = corrRelaPos, file = here('OutputSubmission/simulations_corrRelConMagn.png'), width = 8, height = 10)
-
-
-## Magnitude of absolute contributions ##
-
-# press 
-Lim1press <- stab.auc %>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  filter(Model == 'press' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09, label.y = 0.55)           # Add correlation coefficient
-Lim1press
-
-Lim23press <- stab.auc %>%
-  filter(Model == 'press' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23press
-
-
-# pulse 
-Lim1pulse <- stab.auc %>%
-  filter(Model == 'pulse' & Limit == 'Limit1') %>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09,  label.y = 0.65)           # Add correlation coefficient
-Lim1pulse
-
-Lim23pulse <- stab.auc %>%
-  filter(Model == 'pulse' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23pulse
-
-# pulsepress 
-Lim1pulsepress <- stab.auc %>%
-  filter(Model == 'pulsepress' & Limit == 'Limit1') %>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09, label.y = 1.3)           # Add correlation coefficient
-Lim1pulsepress
-
-Lim23pulsepress <- stab.auc %>%
-  filter(Model == 'pulsepress' & Limit != 'Limit1') %>%
-  filter(species == 'species1' )%>%
-  mutate(pos.AUC.RR = abs(AUC.RR)) %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'pos.AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Magnitude of absolute contribution', xlab = 'Relative dominance')  +
-  stat_cor( label.x = 0.09)           # Add correlation coefficient
-Lim23pulsepress
-
-
-corrAbsPos<- cowplot::plot_grid(  Lim1press,Lim23press, Lim1pulse,Lim23pulse,Lim1pulsepress, Lim23pulsepress,ncol = 2 )
-corrAbsPos
-
-ggsave(plot = corrAbsPos, file = here('OutputSubmission/simulations_corrAbsConMagn.png'), width = 8, height = 10)
-
-
-
-### dominance ~competitiveness ###
-ggscatter(stab.auc,  y = 'mean.con.pi',x = 'inv_relAlpha', add = 'reg.line', conf.int = T, ylab = 'Relative competitiveness',xlab = 'Relative dominance')  +
-  stat_cor( label.x = 1)           # Add correlation coefficient
-
-ggsave(plot = last_plot(), file = here('OutputSubmission/Supplement_correlationDominanceAlpha.tiff'), width = 5, height = 4 )
-
-
 #### raw correlations with negative values ####
 
 ## Relative Contributions ##
 # press 
 Lim1press <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit1') %>%
-ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', title = 'Press Limit 1', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1press
 
 Lim2press <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', title = 'Press Limit 2',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2press
 
 Lim3press <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', title = 'Press Limit 3',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3press
 
@@ -376,21 +251,21 @@ Lim3press
 # pulse 
 Lim1pulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', title = 'Pulse Limit 1',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1pulse
 
 Lim2pulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi',title = 'Pulse Limit 2', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2pulse
 
 Lim3pulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi',title = 'Pulse Limit 3', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3pulse
 
@@ -398,49 +273,49 @@ Lim3pulse
 # pulsepress 
 Lim1pulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',title = 'PulsePress Limit 1',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1pulsepress
 
 Lim2pulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',title = 'PulsePress Limit 2',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2pulsepress
 
 Lim3pulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.pi', title = 'PulsePress Limit 3',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Relative Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3pulsepress
 
 corrRela<- cowplot::plot_grid(  Lim1press,Lim2press, Lim3press, Lim1pulse,Lim2pulse,  Lim3pulse,Lim1pulsepress, Lim2pulsepress,Lim3pulsepress,  ncol = 3 )
 corrRela
 
-ggsave(plot = corrRela, file = here('OutputSubmission/simulations_corrRelatCon.png'), width = 12, height = 10)
+ggsave(plot = corrRela, file = here('OutputSubmission/Table2_Simulations_correlationRelatCon.png'), width = 12, height = 10)
 
 ## Absolute Contributions ##
 
 # press 
 Lim1RRpress <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Press Limit 1',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1RRpress
 
 Lim2RRpress <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Press Limit 2',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2RRpress
 
 Lim3RRpress <- stab.auc %>%
   filter(Model == 'press' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Press Limit 3',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3RRpress
 
@@ -448,21 +323,21 @@ Lim3RRpress
 # pulse 
 Lim1RRpulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Pulse Limit 1',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1RRpulse
 
 Lim2RRpulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Pulse Limit 2',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2RRpulse
 
 Lim3RRpulse <- stab.auc %>%
   filter(Model == 'pulse' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'Pulse Limit 3',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3RRpulse
 
@@ -470,27 +345,27 @@ Lim3RRpulse
 # pulsepress 
 Lim1RRpulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit1') %>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR',title = 'PulsePress Limit 1', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim1RRpulsepress
 
 Lim2RRpulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit2') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'PulsePress Limit 2',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim2RRpulsepress
 
 Lim3RRpulsepress <- stab.auc %>%
   filter(Model == 'pulsepress' & Limit == 'Limit3') %>%
   filter(species == 'species1' )%>%
-  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
+  ggscatter(.,  x = 'mean.con.pi',y = 'AUC.RR', title = 'PulsePress Limit 3',add = 'reg.line',alpha = 0.6, cor.method = 'spearmen',conf.int = T, ylab = 'Absolute Contribution', xlab = 'Relative dominance')  +
   stat_cor( label.x = 0.09)           # Add correlation coefficient
 Lim3RRpulsepress
 
 corrAbs<- cowplot::plot_grid(Lim1RRpress,Lim2RRpress,Lim3RRpress, Lim1RRpulse, Lim2RRpulse,Lim3RRpulse,  Lim1RRpulsepress,  Lim2RRpulsepress,Lim3RRpulsepress,ncol = 3)
 corrAbs
 
-ggsave(plot = corrAbs, file = here('OutputSubmission/simulations_corrAbsCon.png'), width = 12, height = 10)
+ggsave(plot = corrAbs, file = here('OutputSubmission/Table2_simulations_correlationsAbsCon.png'), width = 12, height = 10)
 
 

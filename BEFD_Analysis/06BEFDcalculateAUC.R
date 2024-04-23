@@ -2,6 +2,7 @@
 # by Charlotte Kunze 
 
 rm(list = ls())
+
 #load packages and functions
 library(tidyverse)
 library(MESS) #https://rdrr.io/cran/MESS/man/auc.html
@@ -53,7 +54,7 @@ Lim3LRR<-ggplot(subset(data3, Limit == 'Limit3'&runNumber == 27), aes(x=timepoin
 Lim3LRR
 
 cowplot::plot_grid(Lim1LRR, Lim2LRR, Lim3LRR,ncol = 1, nrow = 3, vjust = 1.7,hjust=0.05,label_size = 10,labels = c('a)', 'b)', 'c)'), rel_widths = c(1,1))
-ggsave(plot = last_plot(), width = 8, height = 7, file = here('OutputSubmission/Fig.1_Biomass.png'))
+ggsave(plot = last_plot(), width = 8, height = 7, file = here('OutputSubmission/FigS1_Biomass.tiff'))
 
 
 ### create USI ####
@@ -115,6 +116,6 @@ stab.auc$Sector[stab.auc$mean.delta.pi<0&stab.auc$mean.RR<0]<-4
 names(stab.auc)
 levels(as.factor(auc$Limit))
 
-#### write csv ####
+#### save data ####
 write.csv(stab.auc, 'BEFD_createdData/StabAlphaAUC.csv' )
 

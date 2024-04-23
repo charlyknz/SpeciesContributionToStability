@@ -7,6 +7,10 @@ library(tidyverse)
 library(here)
 source(here('functions/01BEFDModel.R'))
 
+
+# create folder for simulated data
+dir.create(here('modelOutput')) # all model simulations will be stored here
+
 #------------------------------------------------------------------------#
 # A few information before you run the model:
 # In general, all model parameters are adjustable. However, for simplicity we assume that some of the
@@ -671,18 +675,19 @@ write.csv(Limit3All, here('modelOutput/Loop','Limit3AlphaModelResults_press.csv'
 #------------------------------------------------------------------------#
 
 #### loop importing single model runs ####
-#Rausziehen der Dateipfade:
-setwd("~/Desktop/phD/SpeciesContributionToStability/modelOutput/Loop")
-directory <- paste(getwd(),paste= '',sep = '') # hier sind meine Daten
+
+setwd("modelOutput/Loop")
+
+directory <- paste(getwd(),paste= '',sep = '') # here are my data
 files <- dir(directory, recursive=TRUE, full.names=TRUE, pattern="\\.csv$")
 liste = list.files(pattern = "*.csv")
 
-#Erstellen eines leeren "Blanko-Objektes", welches spaeter alle Daten speichern soll
+#create blank object
 data <- NULL
 #----------------------------------------------------------------------------------------------------------------#
 #----------------------------------------------------------------------------------------------------------------#
 #
-directory <- paste(getwd(),'/modelOutput/Loop',sep = ';') # hier sind meine Daten
+directory <- paste(getwd(),'/modelOutput/Loop',sep = ';') # here are my data
 liste = list.files(pattern = "*.csv")
 
 
@@ -775,7 +780,6 @@ RR.plot<-ggplot(data3, aes(x=timepoint, y=RR,
   facet_grid(~Limit ~Model)
 RR.plot
 
-#### write csv ####
-setwd("~/Desktop/phD/SpeciesContributionToStability")
-write.csv(data3,here('BEFD_createdData/LRRData1.csv'))
+#### save data ####
+write.RDS(data3,here('BEFD_createdData/LRRData1.RDS'))
 

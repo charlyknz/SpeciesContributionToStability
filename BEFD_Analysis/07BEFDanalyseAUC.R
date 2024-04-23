@@ -245,10 +245,10 @@ Lim3pi<-ggplot(subset(stab.alpha, Limit == 'Limit3'), aes(x=relAlpha, y=AUC.pi,
         strip.background =element_rect(fill = 'white', linetype = 0))+
   theme(text = element_text(size = 16)) +  theme(legend.position="")
 
-Lim3pi#ggsave(plot = RRpi, 'RRPi.png',width = 8, height = 4)
+Lim3pi
 
 par(mar=c (5.1, 4.1, 4.1, 2.1))
 ggarrange(Lim1R,Lim1pi,  Lim2R,Lim2pi,Lim3R,Lim3pi,hjust = -1, ncol = 2, nrow = 3, labels =  c( '(a)',' ', '(b)',' ', '(c)'))
-ggsave(plot = last_plot(), width = 14, height = 12, file = here('OutputSubmission/Supplement_AllDist.png'))
+ggsave(plot = last_plot(), width = 14, height = 12, file = here('OutputSubmission/FigS2_AllDist.tiff'))
 
 
