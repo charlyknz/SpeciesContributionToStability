@@ -7,8 +7,9 @@ getwd()
 # 2. load package here
 library(here)
 
-#3. create an output folder in the main folder, if you have not retrieved it from Github otherwise this will return an error
-dir.create(here('OutputSubmission')) # create output folder
+#3. download data from Zenodo and store in the following folders:
+dir.create(here('BEFD_createdData')) 
+dir.create(here('SITES_Data')) 
 
 #4. Model simulations
 
@@ -16,9 +17,6 @@ dir.create(here('OutputSubmission')) # create output folder
 #source(here("BEFD_Analysis/05BEFDcreateData.R"))
 
 #4.2 Create simulation plots and start simulation analysis
-
-# download data from Zenodo and store in the following folder:
-dir.create(here('BEFD_createdData')) 
 
 ##calculation of AUC from LRR csv file
 source(here("BEFD_Analysis/06BEFDcalculateAUC.R"))
