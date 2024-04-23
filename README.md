@@ -1,7 +1,7 @@
 # SpeciesContributionToStability
 This repository contains all R code and data used for the framework on measuring species net contribution to functional stability after perturbation
 
-Zenodo: [https://doi.org/10.5281/zenodo.10027062] (https://doi.org/10.5281/zenodo.11046700)
+Zenodo:(https://doi.org/10.5281/zenodo.11046700)
 
 R version 4.1.3 (2022-03-10)
 
