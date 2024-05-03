@@ -10,7 +10,7 @@ Platform: x86_64-apple-darwin17.0 (64-bit)
 Running under: macOS 14.4.1
 
 
-How to work with this repository:
+**How to work with this repository:**
 
 Download/Clone the project, set the working directory to the project location. 
 
