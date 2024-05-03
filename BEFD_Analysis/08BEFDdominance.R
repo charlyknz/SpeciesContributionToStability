@@ -5,7 +5,6 @@
 library(tidyverse)
 library(ggpubr)
 library(cowplot)
-library(ggpmisc) #for regression lines
 library(here)
 
 #### stabAlphaAUC dataset ####
