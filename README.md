@@ -1,5 +1,7 @@
 # SpeciesContributionToStability
-This repository contains all R code and data used for the framework on measuring species net contribution to functional stability after perturbation
+This repository contains all R code and data used for the manuscript entitled "Partionining species contributions to ecological stability in disturbed communities" 
+Author list: Charlotte Kunze, Dominik Bahlburg, Pablo Urrutia-Cordero, Maren Striebel, Egle Kelpsiene, Silke Langenheder, Ian Donohue & Helmut Hillebrand
+      Inquiries about the MS or the code to: charlotte.kunze@uol.de
 
 Zenodo:(https://doi.org/10.5281/zenodo.11046700)
 
