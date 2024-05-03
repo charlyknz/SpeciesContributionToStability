@@ -270,24 +270,6 @@ AUCsum <- zoo.stab.auc.prefin %>%
             sum.pi = sum(AUC.pi))
 
 
-spring <- AUCsum %>%
-  filter(Experiment == 'spring') %>%
-  group_by(Lake, Experiment, Treatment, Sector) %>%
-  summarise(mean.RR = mean(sum.RR),
-            mean.pi = mean(sum.pi),
-            sd.RR = sd(sum.RR),
-            sd.pi = sd(sum.pi),
-            se.RR = sd.RR / sqrt(n()),
-            se.pi = sd.pi / sqrt(n())) %>%
-ggplot(., aes(x = Sector, y = mean.pi, fill = as.factor(Sector)))+
-  geom_errorbar(aes(ymin = mean.pi - se.pi, ymax = mean.pi + se.pi))+
-  geom_col(color = 'black')+
-  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
-  labs(y = 'Total Relative Contribution to Stability', fill = 'Sector', title = 'Spring Experiment')+
-  geom_hline(yintercept = 0)+
-  facet_grid(~Lake~Treatment)+
-  theme_bw()
-
 spring.rr <- AUCsum %>%
   summarise(mean.RR = mean(sum.RR),
             mean.pi = mean(sum.pi),
@@ -306,27 +288,7 @@ spring.rr <- AUCsum %>%
   theme_bw()
 
 
-cowplot::plot_grid(spring, spring.rr, ncol = 1, labels = c('(a)', '(b)'))
-ggsave(plot = last_plot(), file = here('OutputSubmission/FigS3_AUCcontribution_spring.tiff'), width = 7, height = 14)
-
-summer <- AUCsum %>%
-  filter(Experiment == 'summer') %>%
-  group_by(Lake, Experiment, Treatment, Sector) %>%
-  summarise(mean.RR = mean(sum.RR),
-            mean.pi = mean(sum.pi),
-            sd.RR = sd(sum.RR),
-            sd.pi = sd(sum.pi),
-            se.RR = sd.RR / sqrt(n()),
-            se.pi = sd.pi / sqrt(n())) %>%
-  drop_na(Sector)%>%
-  ggplot(., aes(x = Sector, y = mean.pi, fill = as.factor(Sector)))+
-  geom_errorbar(aes(ymin = mean.pi - se.pi, ymax = mean.pi + se.pi))+
-  geom_col(color = 'black')+
-  scale_fill_manual(values = c('#68789E', '#BEBEBE','#D56060', 'white'))+
-  labs(y = 'Total Relative Contribution to Stability', fill = 'Sector', title = 'Summer Experiment')+
-  geom_hline(yintercept = 0)+
-  facet_grid(~Lake~Treatment)+
-  theme_bw()
+ggsave(plot = last_plot(), file = here('OutputSubmission/FigS3_AUCcontribution_spring.tiff'), width = 7, height = 7)
 
 summer.rr <- AUCsum %>%
   summarise(mean.RR = mean(sum.RR),
@@ -347,8 +309,7 @@ summer.rr <- AUCsum %>%
   theme_bw()
 
 
-cowplot::plot_grid(summer, summer.rr, ncol = 1, labels = c('(a)', '(b)'))
-ggsave(plot = last_plot(), file = here('OutputSubmission/FigS4_AUCcontribution_summer.tiff'), width = 7, height = 14)
+ggsave(plot = last_plot(), file = here('OutputSubmission/FigS4_AUCcontribution_summer.tiff'), width = 7, height = 7)
 
 
 ### Total biomass over time ###
