@@ -4,15 +4,27 @@
 # 1. Check your working directory, if not done, please set to the main folder 
 getwd()
 
-# 2. Load package here
+
+# 2. load R packages and environment used to develop the code including package versions 
+
+#install.packages('here')
 library(here)
+
+install.packages('renv')
+library(renv)
+
+renv::restore()
+
 
 #3. Download data from Zenodo and store in the following folders:
 dir.create(here('BEFD_createdData')) 
 dir.create(here('SITES_Data')) 
 
+# Data Link: https://doi.org/10.5281/zenodo.11046700
+
 # Before running create submission folder
 dir.create(here('OutputSubmission')) 
+
 
 #4. Model simulations
 
