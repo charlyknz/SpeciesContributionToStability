@@ -7,13 +7,25 @@ getwd()
 
 # 2. load R packages and environment used to develop the code including package versions 
 
-#install.packages('here')
-library(here)
-
 install.packages('renv')
 library(renv)
-
 renv::restore()
+
+library(here)
+
+## Sometimes the renv function does not work (depending on the R version on your local device),
+# ALTERNATIVE: install packages one by one
+
+#install.packages('cowplot')
+#install.packages('here')
+#library(here)
+#install.packages('ggpubr') 
+#install.packages('ggpmisc') 
+#install.packages('lme4')
+#install.packages('MESS')
+#install.packages('psych')
+#install.packages('sjPlot')
+#install.packages('tidyverse')
 
 
 #3. Download data from Zenodo and store in the following folders:
@@ -24,7 +36,6 @@ dir.create(here('SITES_Data'))
 
 # Before running create submission folder
 dir.create(here('OutputSubmission')) 
-
 
 #4. Model simulations
 
