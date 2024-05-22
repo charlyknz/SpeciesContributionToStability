@@ -32,7 +32,6 @@ library(here)
 dir.create(here('BEFD_createdData')) 
 dir.create(here('SITES_Data')) 
 
-# Data Link: https://doi.org/10.5281/zenodo.11046700
 
 # Before running create submission folder
 dir.create(here('OutputSubmission')) 
