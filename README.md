@@ -4,8 +4,6 @@ This repository contains all R code and data used for the manuscript entitled **
 **Author list:** Charlotte Kunze, Dominik Bahlburg, Pablo Urrutia-Cordero, Maren Striebel, Egle Kelpsiene, Silke Langenheder, Ian Donohue & Helmut Hillebrand
       - Inquiries about the MS or the code to: charlotte.kunze@uol.de
 
-**Zenodo:**(https://doi.org/10.5281/zenodo.11046700)
-
 **R version:** 4.3.2 (2022-03-10)
 
 Platform: x86_64-apple-darwin17.0 (64-bit)
