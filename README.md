@@ -16,7 +16,7 @@ Running under: macOS 14.4.1
 
 Download/Clone the project, set the working directory to the project location. 
 
-The R environment (package versions + R version) used to develop the code is documented in the renv.lock-file contained in the repository and in the README on Zenodo. Package versions can either be looked up in the renv.lock-file or the entire session can be restored by installing the renv-package and running renv::restore() after opening the project. Depending on the R version on your local device, restoring the renv will return errors, then please install packages one by one as indicated in the **Main.R** script.
+The R environment (package versions + R version) used to develop the code is documented in the renv.lock-file contained in the repository. Package versions can either be looked up in the renv.lock-file or the entire session can be restored by installing the renv-package and running renv::restore() after opening the project. Depending on the R version on your local device, restoring the renv will return errors, then please install packages one by one as indicated in the **Main.R** script.
 
 All scripts should then work as they are, if the required input-files are in the correct locations (look at the file paths specified in the scripts)
 
@@ -24,7 +24,7 @@ All scripts should then work as they are, if the required input-files are in the
 
 ## To run the code: 
 
-Please open the Rproject **SpeciesContributionToStability.Rproj** and the file **Main.R** and follow the instructions: Download the simulation and empirical data available in Zenodo and store them in *"BEFD_createdData"* and *"SITES_Data"*, which will be created in the **Main.R** file, respectively. 
+Please open the Rproject **SpeciesContributionToStability.Rproj** and the file **Main.R** and follow the instructions
 
 Output files are stored in the folder *“OutputSubmission”*, which will also be created in the **Main.R** file
 
