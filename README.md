@@ -24,7 +24,7 @@ All scripts should then work as they are, if the required input-files are in the
 
 ## To run the code: 
 
-Please open the Rproject **SpeciesContributionToStability.Rproj** and the file **Main.R** and follow the instructions
+Please open the Rproject **SpeciesContributionToStability.Rproj** and the file **Main.R** and follow the instructions: Download data from Zenodo and store in folders *BEFD_createdData* and *SITES_Data* that are created in the **Main.R** file.
 
 Output files are stored in the folder *“OutputSubmission”*, which will also be created in the **Main.R** file
 
