@@ -10,6 +10,7 @@ Platform: x86_64-apple-darwin17.0 (64-bit)
 
 Running under: macOS 14.4.1
 
+Zenodo: https://doi.org/10.5281/zenodo.11130744 
 
 
 ## How to work with this repository:
